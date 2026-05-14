@@ -1,4 +1,5 @@
 import { MessageCircle, Mail } from "lucide-react";
+import { whatsappLink, emailLink } from "@/lib/contact";
 
 export function CTA() {
   return (
@@ -19,10 +20,18 @@ export function CTA() {
             <p className="mt-3 text-gold text-lg font-medium">Let's Build Something Amazing Together.</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 md:justify-end">
-            <a href="https://wa.me/0000000000" className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-ink px-7 py-3.5 rounded-full font-semibold shadow-gold hover:scale-[1.03] transition-transform">
+            <a
+              href={whatsappLink("General Inquiry")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-ink px-7 py-3.5 rounded-full font-semibold shadow-gold hover:scale-[1.03] transition-transform"
+            >
               Chat on WhatsApp <MessageCircle className="h-4 w-4" />
             </a>
-            <a href="mailto:hello@pixelspark.studio" className="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/15 text-ink-foreground px-7 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-colors">
+            <a
+              href={emailLink("General Inquiry")}
+              className="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/15 text-ink-foreground px-7 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-colors"
+            >
               Send an Email <Mail className="h-4 w-4" />
             </a>
           </div>

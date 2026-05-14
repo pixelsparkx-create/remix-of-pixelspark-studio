@@ -1,14 +1,15 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import hotel from "@/assets/project-hotel.jpg";
 import solar from "@/assets/project-solar.jpg";
 import portfolio from "@/assets/project-portfolio.jpg";
 import game from "@/assets/project-game.jpg";
 
 const projects = [
-  { img: hotel, title: "Hotel Booking Website", tag: "Web Design" },
-  { img: solar, title: "Solar Company Website", tag: "Business Site" },
-  { img: portfolio, title: "Personal Portfolio Website", tag: "Personal Brand" },
-  { img: game, title: "2D Adventure Game", tag: "Game Dev" },
+  { img: hotel, title: "Hotel Booking Website", tag: "Web Design", category: "Hotel Platforms" },
+  { img: solar, title: "Solar Company Website", tag: "Business Site", category: "Websites" },
+  { img: portfolio, title: "Personal Portfolio Website", tag: "Personal Brand", category: "UI Concepts" },
+  { img: game, title: "2D Adventure Game", tag: "Game Dev", category: "Games" },
 ];
 
 export function Portfolio() {
@@ -19,26 +20,44 @@ export function Portfolio() {
           <div className="text-xs font-semibold tracking-[0.2em] text-gold mb-3">RECENT WORK</div>
           <h2 className="text-3xl lg:text-5xl font-bold">Some Things I've Built</h2>
         </div>
-        <a href="#contact" className="inline-flex items-center gap-2 text-sm font-semibold text-gold hover:gap-3 transition-all">
+        <Link
+          to="/portfolio"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gold hover:gap-3 transition-all"
+        >
           View All Projects <ArrowUpRight className="h-4 w-4" />
-        </a>
+        </Link>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {projects.map((p) => (
-          <a key={p.title} href="#contact" className="group block">
-            <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/3] shadow-card">
-              <img src={p.img} alt={p.title} loading="lazy" width={800} height={600}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute bottom-3 right-3 h-9 w-9 rounded-full bg-gradient-gold text-ink flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
-                <ArrowUpRight className="h-4 w-4" />
+          <Link
+            key={p.title}
+            to="/portfolio"
+            className="group block"
+          >
+            <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/3] shadow-card hover:shadow-gold transition-shadow">
+              <img
+                src={p.img}
+                alt={p.title}
+                loading="lazy"
+                width={800}
+                height={600}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                <span className="text-xs font-semibold text-ink-foreground bg-ink/60 backdrop-blur px-2.5 py-1 rounded-full">
+                  {p.category}
+                </span>
+                <span className="h-9 w-9 rounded-full bg-gradient-gold text-ink flex items-center justify-center shadow-gold">
+                  <ExternalLink className="h-4 w-4" />
+                </span>
               </div>
             </div>
             <div className="mt-4">
               <div className="text-xs text-gold font-semibold tracking-wider uppercase">{p.tag}</div>
               <h3 className="mt-1 font-semibold text-foreground group-hover:text-gold transition-colors">{p.title}</h3>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
