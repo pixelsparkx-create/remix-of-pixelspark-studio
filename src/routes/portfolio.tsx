@@ -3,22 +3,8 @@ import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { CTA } from "@/components/site/CTA";
-import hotel from "@/assets/project-hotel.jpg";
-import solar from "@/assets/project-solar.jpg";
-import portfolio from "@/assets/project-portfolio.jpg";
-import game from "@/assets/project-game.jpg";
-
-const categories = ["All", "Websites", "Hotel Platforms", "Mobile Apps", "UI Concepts", "Games"] as const;
-type Category = (typeof categories)[number];
-
-const projects: { img: string; title: string; tag: string; category: Category }[] = [
-  { img: hotel, title: "Hotel Booking Website", tag: "Booking + Payments", category: "Hotel Platforms" },
-  { img: solar, title: "Solar Company Website", tag: "Business Site", category: "Websites" },
-  { img: portfolio, title: "Personal Portfolio Website", tag: "Personal Brand", category: "UI Concepts" },
-  { img: game, title: "2D Adventure Game", tag: "Game Dev", category: "Games" },
-  { img: solar, title: "SaaS Landing Page", tag: "High-converting", category: "Websites" },
-  { img: portfolio, title: "Mobile App Concept", tag: "iOS / Android", category: "Mobile Apps" },
-];
+import { ProjectShowcase } from "@/components/site/ProjectShowcase";
+import { categories, projects, type Category, type Project } from "@/lib/projects";
 
 export const Route = createFileRoute("/portfolio")({
   head: () => ({
@@ -34,6 +20,7 @@ export const Route = createFileRoute("/portfolio")({
 
 function PortfolioPage() {
   const [active, setActive] = useState<Category>("All");
+  const [showcase, setShowcase] = useState<Project | null>(null);
   const visible = projects.filter((p) => active === "All" || p.category === active);
 
   return (
@@ -64,15 +51,15 @@ function PortfolioPage() {
 
         <div className="mx-auto max-w-7xl px-6 lg:px-10 pb-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {visible.map((p, i) => (
-            <a
-              key={`${p.title}-${i}`}
-              href="#"
-              className="group block animate-fade-in"
+            <button
+              key={p.slug}
+              onClick={() => setShowcase(p)}
+              className="group block text-left animate-fade-in"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/3] shadow-card hover:shadow-gold transition-shadow">
                 <img
-                  src={p.img}
+                  src={p.cover}
                   alt={p.title}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -91,11 +78,12 @@ function PortfolioPage() {
                 <div className="text-xs text-gold font-semibold tracking-wider uppercase">{p.tag}</div>
                 <h3 className="mt-1 font-semibold text-foreground group-hover:text-gold transition-colors">{p.title}</h3>
               </div>
-            </a>
+            </button>
           ))}
         </div>
         <CTA />
       </div>
+      <ProjectShowcase project={showcase} onClose={() => setShowcase(null)} />
     </SiteShell>
   );
 }
