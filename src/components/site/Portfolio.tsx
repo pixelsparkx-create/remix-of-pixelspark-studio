@@ -1,18 +1,13 @@
+import { useState } from "react";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import hotel from "@/assets/project-hotel.jpg";
-import solar from "@/assets/project-solar.jpg";
-import portfolio from "@/assets/project-portfolio.jpg";
-import game from "@/assets/project-game.jpg";
-
-const projects = [
-  { img: hotel, title: "Hotel Booking Website", tag: "Web Design", category: "Hotel Platforms" },
-  { img: solar, title: "Solar Company Website", tag: "Business Site", category: "Websites" },
-  { img: portfolio, title: "Personal Portfolio Website", tag: "Personal Brand", category: "UI Concepts" },
-  { img: game, title: "2D Adventure Game", tag: "Game Dev", category: "Games" },
-];
+import { projects, type Project } from "@/lib/projects";
+import { ProjectShowcase } from "./ProjectShowcase";
 
 export function Portfolio() {
+  const [active, setActive] = useState<Project | null>(null);
+  const featured = projects.slice(0, 4);
+
   return (
     <section id="portfolio" className="mx-auto max-w-7xl px-6 lg:px-10 py-20">
       <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
@@ -28,15 +23,15 @@ export function Portfolio() {
         </Link>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {projects.map((p) => (
-          <Link
-            key={p.title}
-            to="/portfolio"
-            className="group block"
+        {featured.map((p) => (
+          <button
+            key={p.slug}
+            onClick={() => setActive(p)}
+            className="group block text-left"
           >
             <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/3] shadow-card hover:shadow-gold transition-shadow">
               <img
-                src={p.img}
+                src={p.cover}
                 alt={p.title}
                 loading="lazy"
                 width={800}
@@ -57,9 +52,10 @@ export function Portfolio() {
               <div className="text-xs text-gold font-semibold tracking-wider uppercase">{p.tag}</div>
               <h3 className="mt-1 font-semibold text-foreground group-hover:text-gold transition-colors">{p.title}</h3>
             </div>
-          </Link>
+          </button>
         ))}
       </div>
+      <ProjectShowcase project={active} onClose={() => setActive(null)} />
     </section>
   );
 }
