@@ -27,6 +27,7 @@ export type Project = {
   gallery: string[];
   description: string;
   client: string;
+  location?: string;
   tech: string[];
   features: string[];
   liveUrl?: string;
