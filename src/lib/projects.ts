@@ -1,12 +1,12 @@
 import tranquil1 from "@/assets/tranquil-oasis-1.png";
 import tranquil2 from "@/assets/tranquil-oasis-2.png";
 import tranquil3 from "@/assets/tranquil-oasis-3.png";
-import solar from "@/assets/project-solar.jpg";
+import rendezvous1 from "@/assets/rendezvous-solar-1.png";
+import rendezvous2 from "@/assets/rendezvous-solar-2.png";
+import rendezvous3 from "@/assets/rendezvous-solar-3.png";
+import rendezvous4 from "@/assets/rendezvous-solar-4.png";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 import game from "@/assets/project-game.jpg";
-
-const hotel = tranquil1;
-
 
 export const categories = [
   "All",
@@ -61,26 +61,33 @@ export const projects: Project[] = [
     ],
     liveUrl: "https://tranquil-oasis-pxs-101.netlify.app",
   },
-
   {
-    slug: "solar-company",
-    title: "Solar Company Website",
-    tag: "Business Site",
+    slug: "rendezvous-solar",
+    title: "Rendezvous Solar Company",
+    tag: "Reliable Solar Energy Platform",
     category: "Websites",
-    cover: solar,
-    gallery: [solar, hotel, portfolioImg],
+    cover: rendezvous1,
+    gallery: [rendezvous1, rendezvous2, rendezvous3, rendezvous4],
     description:
-      "A clean, conversion-focused business website for a solar energy company — built to win leads, showcase services and rank on Google.",
-    client: "Renewable Energy Brand",
-    tech: ["React", "TanStack Start", "Tailwind CSS", "SEO"],
+      "A modern solar energy company website built for Rendezvous Solar — combining clean design, trust-focused user experience and conversion-driven layouts to help homes and businesses transition to reliable solar energy. Designed for the Nigerian market, the platform showcases professional solar solutions while educating visitors about the long-term benefits of clean, uninterrupted power. The experience blends premium visuals, smooth navigation and strong call-to-actions to convert visitors into solar clients.",
+    client: "Rendezvous Solar",
+    location: "17 Anjorin Street, Off Alh Alade St, Ijegun, Lagos",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Supabase", "Stripe"],
     features: [
-      "Lead capture forms",
-      "Service & pricing pages",
-      "Project gallery",
-      "WhatsApp quick-quote integration",
-      "Optimized for Core Web Vitals",
+      "Residential solar solution showcase",
+      "Commercial solar service presentation",
+      "Inverter & battery system information",
+      "Interactive “Get a Quote” call-to-actions",
+      "Solar energy benefits breakdown",
+      "Modern responsive UI across all devices",
+      "Conversion-focused landing experience",
+      "Clean premium animations & transitions",
+      "Trust-building service sections",
+      "SEO-optimized structure",
+      "Fast-loading optimized pages",
+      "Business inquiry/contact integration",
     ],
-    liveUrl: "https://example.com",
+    liveUrl: "https://rendezvous-solar-pxs-101.netlify.app",
   },
   {
     slug: "personal-portfolio",
@@ -88,7 +95,7 @@ export const projects: Project[] = [
     tag: "Personal Brand",
     category: "UI Concepts",
     cover: portfolioImg,
-    gallery: [portfolioImg, game, solar],
+    gallery: [portfolioImg, game, rendezvous1],
     description:
       "A cinematic personal brand site for a creative professional — premium typography, smooth motion and a portfolio that does the selling.",
     client: "Creative Professional",
@@ -107,7 +114,7 @@ export const projects: Project[] = [
     tag: "Game Dev",
     category: "Games",
     cover: game,
-    gallery: [game, portfolioImg, hotel],
+    gallery: [game, portfolioImg, tranquil1],
     description:
       "A playful 2D adventure game with custom characters, smooth controls and level progression — built as a creative showcase.",
     client: "Indie Game Concept",
@@ -124,8 +131,8 @@ export const projects: Project[] = [
     title: "SaaS Landing Page",
     tag: "High-converting",
     category: "Websites",
-    cover: solar,
-    gallery: [solar, portfolioImg, hotel],
+    cover: rendezvous2,
+    gallery: [rendezvous2, portfolioImg, tranquil1],
     description:
       "A high-converting SaaS landing page with clear pricing, social proof and a sign-up flow tuned for paid traffic.",
     client: "B2B SaaS Startup",
@@ -144,7 +151,7 @@ export const projects: Project[] = [
     tag: "iOS / Android",
     category: "Mobile Apps",
     cover: portfolioImg,
-    gallery: [portfolioImg, game, solar],
+    gallery: [portfolioImg, game, rendezvous1],
     description:
       "A cross-platform mobile app concept with refined UI, smooth navigation and a premium onboarding flow.",
     client: "Lifestyle Startup",
