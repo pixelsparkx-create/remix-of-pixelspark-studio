@@ -1,7 +1,12 @@
-import hotel from "@/assets/project-hotel.jpg";
+import tranquil1 from "@/assets/tranquil-oasis-1.png";
+import tranquil2 from "@/assets/tranquil-oasis-2.png";
+import tranquil3 from "@/assets/tranquil-oasis-3.png";
 import solar from "@/assets/project-solar.jpg";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 import game from "@/assets/project-game.jpg";
+
+const hotel = tranquil1;
+
 
 export const categories = [
   "All",
@@ -22,6 +27,7 @@ export type Project = {
   gallery: string[];
   description: string;
   client: string;
+  location?: string;
   tech: string[];
   features: string[];
   liveUrl?: string;
@@ -29,25 +35,33 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "hotel-booking",
-    title: "Hotel Booking Website",
-    tag: "Booking + Payments",
+    slug: "tranquil-oasis-hotel",
+    title: "Tranquil Oasis Hotel",
+    tag: "Luxury Hotel Booking Platform",
     category: "Hotel Platforms",
-    cover: hotel,
-    gallery: [hotel, solar, portfolioImg],
+    cover: tranquil1,
+    gallery: [tranquil1, tranquil2, tranquil3],
     description:
-      "A premium hotel platform with real-time room availability, secure online payments and a luxury front-end designed to convert browsers into bookings.",
-    client: "Boutique Hotels & Resorts",
+      "A premium hospitality website crafted for Tranquil Oasis Hotel — blending elegant design, seamless booking experiences and modern hotel technology into one refined digital platform. Located in the heart of Lekki Phase 1, Lagos, the platform reflects the hotel's luxury atmosphere while making room reservations faster, easier and more immersive for guests. Cinematic visuals, smooth navigation and conversion-focused booking flows help transform visitors into confirmed guests.",
+    client: "Tranquil Oasis Hotel",
+    location: "Lekki Phase 1, Lagos",
     tech: ["React", "TypeScript", "Tailwind CSS", "Supabase", "Stripe"],
     features: [
-      "Room search & availability calendar",
-      "Online payments with instant confirmation",
-      "Guest profile & booking history",
-      "Admin dashboard for rooms & rates",
-      "Fully responsive luxury UI",
+      "Real-time room availability system",
+      "Online booking & secure payment integration",
+      "Luxury responsive UI across all devices",
+      "Complimentary breakfast highlights",
+      "High-speed WiFi showcase",
+      "Smart room experience presentation",
+      "Interactive room previews",
+      "Admin management dashboard",
+      "Smooth animations & premium transitions",
+      "SEO-optimized hospitality structure",
+      "Guest-focused booking experience",
     ],
-    liveUrl: "https://example.com",
+    liveUrl: "https://tranquil-oasis-pxs-101.netlify.app",
   },
+
   {
     slug: "solar-company",
     title: "Solar Company Website",

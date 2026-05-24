@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { X, ExternalLink, ChevronLeft, ChevronRight, CheckCircle2, Layers, Sparkles, Users } from "lucide-react";
+import { X, ExternalLink, ChevronLeft, ChevronRight, CheckCircle2, Layers, Sparkles, Users, MapPin } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { Project } from "@/lib/projects";
 
@@ -125,6 +125,11 @@ export function ProjectShowcase({ project, onClose }: { project: Project | null;
           <InfoCard icon={<Sparkles className="h-4 w-4" />} label="Category">
             {project.category}
           </InfoCard>
+          {project.location && (
+            <InfoCard icon={<MapPin className="h-4 w-4" />} label="Location">
+              {project.location}
+            </InfoCard>
+          )}
           <InfoCard icon={<Layers className="h-4 w-4" />} label="Technologies" className="sm:col-span-2">
             <div className="flex flex-wrap gap-2 mt-2">
               {project.tech.map((t) => (
