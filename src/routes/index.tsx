@@ -3,6 +3,8 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Hero } from "@/components/site/Hero";
 import { Services } from "@/components/site/Services";
 import { Portfolio } from "@/components/site/Portfolio";
+import { FeaturedProducts } from "@/components/site/FeaturedProducts";
+
 import { Process } from "@/components/site/Process";
 import { Pricing } from "@/components/site/Pricing";
 import { Testimonials } from "@/components/site/Testimonials";
@@ -37,7 +39,9 @@ function Index() {
         <Testimonials />
         <Stats />
       </section>
+      <FeaturedProducts />
       <Portfolio />
+
       <About />
       <CTA />
     </SiteShell>

@@ -7,6 +7,10 @@ import rendezvous3 from "@/assets/rendezvous-solar-3.png";
 import rendezvous4 from "@/assets/rendezvous-solar-4.png";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 import game from "@/assets/project-game.jpg";
+import bluerush1 from "@/assets/bluerush-223505.png.asset.json";
+import bluerush2 from "@/assets/bluerush-223532.png.asset.json";
+import bluerush3 from "@/assets/bluerush-223641.png.asset.json";
+
 
 export const categories = [
   "All",
@@ -90,24 +94,27 @@ export const projects: Project[] = [
     liveUrl: "https://rendezvous-solar-pxs-101.netlify.app",
   },
   {
-    slug: "personal-portfolio",
-    title: "Personal Portfolio Website",
-    tag: "Personal Brand",
-    category: "UI Concepts",
-    cover: portfolioImg,
-    gallery: [portfolioImg, game, rendezvous1],
+    slug: "bluerush",
+    title: "BlueRush",
+    tag: "Smart Bike Ride Planner",
+    category: "Mobile Apps",
+    cover: bluerush1.url,
+    gallery: [bluerush1.url, bluerush2.url, bluerush3.url],
     description:
-      "A cinematic personal brand site for a creative professional — premium typography, smooth motion and a portfolio that does the selling.",
-    client: "Creative Professional",
-    tech: ["React", "Framer Motion", "Tailwind CSS"],
+      "BlueRush is an intelligent cycling companion that helps riders plan safer and smarter rides. It combines daily weather forecasts with a unique Rideability Score to help cyclists know the best time to ride. The app is designed with a clean, modern interface and focuses on making ride planning simple, accurate, and enjoyable.",
+    client: "BlueRush",
+    tech: ["Weather APIs", "Maps Integration", "Modern UI/UX", "Mobile Development"],
     features: [
-      "Hero animation",
-      "Filterable portfolio",
-      "About & contact sections",
-      "Dark/light premium theme",
+      "Daily weather forecasts",
+      "Rideability Score",
+      "Smart ride planning",
+      "Clean modern UI",
+      "Weather-based recommendations",
+      "Mobile-first experience",
     ],
-    liveUrl: "https://example.com",
+    liveUrl: "https://lovable.dev/share-preview/e468914c-cf77-4dae-b9c3-1636eef25c55",
   },
+
   {
     slug: "adventure-game",
     title: "2D Adventure Game",
