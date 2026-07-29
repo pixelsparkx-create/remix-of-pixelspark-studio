@@ -190,25 +190,36 @@ export function FeaturedProducts() {
               />
             </div>
 
-            <div
-              className={`relative sm:absolute sm:-bottom-6 sm:-left-6 sm:w-[62%] mt-5 sm:mt-0 rounded-2xl overflow-hidden border border-gold/25 bg-background/70 backdrop-blur-xl shadow-gold transition-all duration-1000 hover:-translate-y-1.5 ${
-                seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-              }`}
-              style={{ transitionDelay: "250ms" }}
-            >
-              <img
-                src={shot2.url}
-                alt="BlueRush advanced ride analysis screen"
-                loading="lazy"
-                className="w-full object-cover"
-              />
+            <div className="relative z-10 -mt-4 sm:-mt-8 sm:ml-8 grid sm:grid-cols-[1.35fr_1fr] gap-4 items-end">
+              <div
+                className={`rounded-2xl overflow-hidden border border-gold/25 bg-background/70 backdrop-blur-xl shadow-gold transition-all duration-1000 hover:-translate-y-1.5 ${
+                  seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                }`}
+                style={{ transitionDelay: "250ms" }}
+              >
+                <img
+                  src={shot2.url}
+                  alt="BlueRush advanced ride analysis screen"
+                  loading="lazy"
+                  className="w-full object-cover"
+                />
+              </div>
+
+              <div
+                className={`transition-all duration-1000 ${
+                  seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
+                style={{ transitionDelay: "450ms" }}
+              >
+                <RideabilityGauge active={seen} />
+              </div>
             </div>
 
             <div
-              className={`relative sm:absolute sm:-top-8 sm:-right-6 sm:w-[46%] mt-5 sm:mt-0 rounded-2xl overflow-hidden border border-border bg-background/70 backdrop-blur-xl shadow-card transition-all duration-1000 hover:-translate-y-1.5 ${
-                seen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
+              className={`mt-4 sm:mt-6 sm:mr-10 rounded-2xl overflow-hidden border border-border bg-background/70 backdrop-blur-xl shadow-card transition-all duration-1000 hover:-translate-y-1.5 ${
+                seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
-              style={{ transitionDelay: "400ms" }}
+              style={{ transitionDelay: "600ms" }}
             >
               <img
                 src={shot3.url}
@@ -217,16 +228,8 @@ export function FeaturedProducts() {
                 className="w-full object-cover"
               />
             </div>
-
-            <div
-              className={`mt-6 sm:mt-0 sm:absolute sm:bottom-10 sm:right-0 transition-all duration-1000 ${
-                seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-              style={{ transitionDelay: "550ms" }}
-            >
-              <RideabilityGauge active={seen} />
-            </div>
           </div>
+
         </div>
       </div>
     </section>
