@@ -7,6 +7,10 @@ import rendezvous3 from "@/assets/rendezvous-solar-3.png";
 import rendezvous4 from "@/assets/rendezvous-solar-4.png";
 import portfolioImg from "@/assets/project-portfolio.jpg";
 import game from "@/assets/project-game.jpg";
+import bluerush1 from "@/assets/bluerush-223505.png.asset.json";
+import bluerush2 from "@/assets/bluerush-223532.png.asset.json";
+import bluerush3 from "@/assets/bluerush-223641.png.asset.json";
+
 
 export const categories = [
   "All",
