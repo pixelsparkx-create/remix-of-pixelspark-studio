@@ -39,7 +39,9 @@ function Index() {
         <Testimonials />
         <Stats />
       </section>
+      <FeaturedProducts />
       <Portfolio />
+
       <About />
       <CTA />
     </SiteShell>
