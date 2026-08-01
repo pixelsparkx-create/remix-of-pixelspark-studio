@@ -120,7 +120,7 @@ export const projects: Project[] = [
       "Weather-based recommendations",
       "Mobile-first experience",
     ],
-    liveUrl: "https://lovable.dev/share-preview/e468914c-cf77-4dae-b9c3-1636eef25c55",
+    liveUrl: BLUERUSH_URL,
   },
 
   {
