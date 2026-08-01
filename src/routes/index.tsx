@@ -42,7 +42,9 @@ function Index() {
         <Stats />
       </section>
       <FeaturedProducts />
+      <FeaturedCaseStudy />
       <Portfolio />
+
 
       <About />
       <CTA />
