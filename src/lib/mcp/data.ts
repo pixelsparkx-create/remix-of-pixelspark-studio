@@ -49,13 +49,13 @@ export const pricing = [
 
 export const portfolio = [
   {
-    slug: "tranquil-oasis-hotel",
-    title: "Tranquil Oasis Hotel",
+    slug: "nevada-hotels-suites",
+    title: "Nevada Hotels & Suites",
     category: "Hotel Platforms",
-    location: "Lekki Phase 1, Lagos",
-    liveUrl: "https://tranquil-oasis-pxs-101.netlify.app",
+    location: "Lekki, Lagos",
+    liveUrl: "https://nevada-hotels-shutdown-101.netlify.app/",
     summary:
-      "Luxury hotel booking platform with real-time room availability, secure payments and a cinematic guest experience.",
+      "Luxury hospitality website for a Lekki hotel — room showcase, restaurant & bar, gallery and mobile-first booking enquiries.",
   },
   {
     slug: "rendezvous-solar",
