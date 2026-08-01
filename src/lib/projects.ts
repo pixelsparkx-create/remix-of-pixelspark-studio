@@ -1,6 +1,4 @@
 import tranquil1 from "@/assets/tranquil-oasis-1.png";
-import tranquil2 from "@/assets/tranquil-oasis-2.png";
-import tranquil3 from "@/assets/tranquil-oasis-3.png";
 import rendezvous1 from "@/assets/rendezvous-solar-1.png";
 import rendezvous2 from "@/assets/rendezvous-solar-2.png";
 import rendezvous3 from "@/assets/rendezvous-solar-3.png";
@@ -10,6 +8,16 @@ import game from "@/assets/project-game.jpg";
 import bluerush1 from "@/assets/bluerush-223505.png.asset.json";
 import bluerush2 from "@/assets/bluerush-223532.png.asset.json";
 import bluerush3 from "@/assets/bluerush-223641.png.asset.json";
+import nevada1 from "@/assets/nevada-1.png.asset.json";
+import nevada2 from "@/assets/nevada-2.png.asset.json";
+import nevada3 from "@/assets/nevada-3.png.asset.json";
+
+export const BLUERUSH_URL =
+  "https://lovable.dev/share-preview/e468914c-cf77-4dae-b9c3-1636eef25c55#preview_url=https%3A%2F%2Fid-preview--e468914c-cf77-4dae-b9c3-1636eef25c55.lovable.app%3F__lovable_token%3DeyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTk1sc2RabUYxSFVNZ3dTWVN4NFR4aUEybWFpMSIsInByb2plY3RfaWQiOiJlNDY4OTE0Yy1jZjc3LTRkYWUtYjljMy0xNjM2ZWVmMjVjNTUiLCJhY2Nlc3NfdHlwZSI6InByb2plY3QiLCJpc3MiOiJsb3ZhYmxlLWFwaSIsInN1YiI6ImU0Njg5MTRjLWNmNzctNGRhZS1iOWMzLTE2MzZlZWYyNWM1NSIsImF1ZCI6WyJsb3ZhYmxlLWFwcCJdLCJleHAiOjE3ODU5NjU1NzksIm5iZiI6MTc4NTM2MDc3OSwiaWF0IjoxNzg1MzYwNzc5LCJqdGkiOiIwYTBhNGU0Ny00MzdlLTQ1MmItOTg1ZS1jNzJkZjRlMmQxYzIifQ.IygJmIbq1l3cEX-jjdEw6rCsHrG5LglZ_0EnrZTuQyf5J1UG6JssIk6Y8Rd80fkPwFumx7RqW1dCAYssVtNaLZtC7cF7tT08ZMEsygbt3weIe_49GSV4RWP3Fk3tmQmm51euYjZ4sMBhmnorDvIiAb04qlMYfoyoPL5GF5nUH4ILaXG9wsru0_HB0Q3HHRDko3hYKLUdfh4n9Azn75YRaap1J9tUlxBdjRquqLJseRF6h140NdnQ5QikGdxsLX15OUzfOJJw397L9uGV-iDN3ZhPAk2W1cx27RqWDHxv-lgJsjCZqRB8b1CRi20fuNTL59wqcrUINiEZUg_P2LKROfjPnULJb-hth67w8bdqqiZ-scsik9LOFyVTeysUfZ1e6Yb0GIl6wyqmq_Q22-aZa88No32FBAce2L_mMsaVoV-m4uHpQc4pylfHTbGVe45u2dnyPToK76YO_zOEgC04DuJH5xtu56jkAKg4jDA0oCbRuOXHMUwSDKGm6HXLjKcsB5LHwGKQ6OT-1PEUtDqdMHSoSDgD-QLTMBx3XioeZaqiw5_h-cFpYDEy4gHYR_u3XHm5UHDKHPNLmKt8mMa6HLTf24Z5l7QbFC3blRNAj8BydMlLguRi_oH9mIztqY3ZzQjgWvyovoDaEh3cv7t0hLhTlIVuAmKNPPjFFNCUawU";
+
+export const NEVADA_URL = "https://nevada-hotels-shutdown-101.netlify.app/";
+export const nevadaShots = [nevada1.url, nevada2.url, nevada3.url];
+
 
 
 export const categories = [
@@ -39,32 +47,32 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "tranquil-oasis-hotel",
-    title: "Tranquil Oasis Hotel",
-    tag: "Luxury Hotel Booking Platform",
+    slug: "nevada-hotels-suites",
+    title: "Nevada Hotels & Suites",
+    tag: "Luxury Hotel Website",
     category: "Hotel Platforms",
-    cover: tranquil1,
-    gallery: [tranquil1, tranquil2, tranquil3],
+    cover: nevada1.url,
+    gallery: nevadaShots,
     description:
-      "A premium hospitality website crafted for Tranquil Oasis Hotel — blending elegant design, seamless booking experiences and modern hotel technology into one refined digital platform. Located in the heart of Lekki Phase 1, Lagos, the platform reflects the hotel's luxury atmosphere while making room reservations faster, easier and more immersive for guests. Cinematic visuals, smooth navigation and conversion-focused booking flows help transform visitors into confirmed guests.",
-    client: "Tranquil Oasis Hotel",
-    location: "Lekki Phase 1, Lagos",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Supabase", "Stripe"],
+      "Nevada Hotels & Suites is a modern hospitality website designed to showcase a premium hotel experience while making it easy for guests to explore rooms, amenities, and contact the hotel. Nestled in the vibrant heart of Lekki, Lagos, the hotel offers modern rooms, quality dining, a swimming pool, 24-hour power supply and exceptional service — and the website was built to communicate warmth, professionalism and affordability while presenting the hotel as a premium destination that drives direct bookings.",
+    client: "Nevada Hotels & Suites",
+    location: "Lekki, Lagos",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Responsive Design", "Modern UI/UX", "Netlify"],
     features: [
-      "Real-time room availability system",
-      "Online booking & secure payment integration",
-      "Luxury responsive UI across all devices",
-      "Complimentary breakfast highlights",
-      "High-speed WiFi showcase",
-      "Smart room experience presentation",
-      "Interactive room previews",
-      "Admin management dashboard",
-      "Smooth animations & premium transitions",
-      "SEO-optimized hospitality structure",
-      "Guest-focused booking experience",
+      "Luxury landing page",
+      "Room showcase",
+      "Restaurant & bar",
+      "Gallery",
+      "Responsive design",
+      "Location & contact",
+      "Modern navigation",
+      "Fast loading",
+      "Mobile optimized",
+      "Elegant UI",
     ],
-    liveUrl: "https://tranquil-oasis-pxs-101.netlify.app",
+    liveUrl: NEVADA_URL,
   },
+
   {
     slug: "rendezvous-solar",
     title: "Rendezvous Solar Company",
@@ -112,7 +120,7 @@ export const projects: Project[] = [
       "Weather-based recommendations",
       "Mobile-first experience",
     ],
-    liveUrl: "https://lovable.dev/share-preview/e468914c-cf77-4dae-b9c3-1636eef25c55",
+    liveUrl: BLUERUSH_URL,
   },
 
   {

@@ -4,9 +4,10 @@ import { ArrowUpRight, ExternalLink, Sparkles } from "lucide-react";
 import shot1 from "@/assets/bluerush-223505.png.asset.json";
 import shot2 from "@/assets/bluerush-223532.png.asset.json";
 import shot3 from "@/assets/bluerush-223641.png.asset.json";
+import { BLUERUSH_URL } from "@/lib/projects";
 
-const PROJECT_URL =
-  "https://lovable.dev/share-preview/e468914c-cf77-4dae-b9c3-1636eef25c55";
+const PROJECT_URL = BLUERUSH_URL;
+
 
 const features = [
   "Daily weather forecasts",
