@@ -76,9 +76,19 @@ export const portfolio = [
       "Smart bike ride planner combining daily weather forecasts with a Rideability Score so cyclists know the best time to ride.",
   },
   {
-    slug: "arcade-game",
-    title: "2D Arcade Game",
+    slug: "deenly",
+    title: "Deenly",
+    category: "Mobile Apps",
+    liveUrl: "https://mydeenly.netlify.app",
+    summary:
+      "Muslim companion app with prayer times, Quran reader, hadith collection, Ramadan tracker, Qibla compass and cloud sync.",
+  },
+  {
+    slug: "emoji-forge",
+    title: "Emoji Forge",
     category: "Games",
-    summary: "A browser-based 2D game concept with responsive controls and playful art direction.",
+    summary:
+      "Strategic turn-based mobile battle game where players collect, upgrade and command emoji fighters across multiple worlds. In development.",
   },
 ];
+
