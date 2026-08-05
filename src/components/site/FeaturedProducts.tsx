@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, ExternalLink, Sparkles } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Sparkles, Play } from "lucide-react";
 import shot1 from "@/assets/bluerush-223505.png.asset.json";
 import shot2 from "@/assets/bluerush-223532.png.asset.json";
 import shot3 from "@/assets/bluerush-223641.png.asset.json";
-import { BLUERUSH_URL } from "@/lib/projects";
+import {
+  BLUERUSH_URL,
+  EMOJI_FORGE_URL,
+  DEENLY_URL,
+  emojiForgeShots,
+  deenlyShots,
+} from "@/lib/projects";
 
 const PROJECT_URL = BLUERUSH_URL;
+
 
 
 const features = [
