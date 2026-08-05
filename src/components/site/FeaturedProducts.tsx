@@ -240,6 +240,10 @@ export function FeaturedProducts() {
 
         </div>
       </div>
+
+      <DeenlyCard />
+      <EmojiForgeCard />
     </section>
+
   );
 }
