@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -31,6 +32,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/testimonials'
     | '/.mcp/list-tools'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/testimonials'
     | '/.mcp/list-tools'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/testimonials'
     | '/.mcp/list-tools'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   PortfolioRoute: typeof PortfolioRoute
   PricingRoute: typeof PricingRoute
+  ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
   TestimonialsRoute: typeof TestimonialsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -306,6 +326,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   PortfolioRoute: PortfolioRoute,
   PricingRoute: PricingRoute,
+  ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
   TestimonialsRoute: TestimonialsRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,

@@ -107,8 +107,8 @@ export function Hero() {
             <img
               src={mohammed}
               alt="Mohammed, founder of PixelSpark"
-              width={1024}
-              height={1280}
+              width={720}
+              height={764}
               className="relative z-10 w-full h-full object-contain object-bottom drop-shadow-2xl"
             />
             <div className="absolute top-8 -right-4 lg:right-0 z-20 text-right">

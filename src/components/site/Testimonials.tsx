@@ -1,10 +1,42 @@
 import { useEffect, useState, useRef, FormEvent } from "react";
-import { Quote, Star, BadgeCheck, Plus, X, Loader2 } from "lucide-react";
+import { Quote, Star, BadgeCheck, Plus, X, Loader2, Check, Link2 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+function ShareReviewLink() {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    const url = `${window.location.origin}/reviews`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopied(true);
+    toast.success("Review link copied");
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <button
+      onClick={copy}
+      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/70 hover:text-gold transition-colors border border-border hover:border-gold/40 rounded-full px-3 py-1.5"
+    >
+      {copied ? <Check className="h-3.5 w-3.5 text-gold" /> : <Link2 className="h-3.5 w-3.5" />}
+      {copied ? "Copied" : "Share Review Link"}
+    </button>
+  );
+}
+
 
 type Testimonial = {
   id: string;
@@ -71,21 +103,26 @@ export function Testimonials() {
   }, []);
 
   return (
-    <div id="testimonials" className="rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-card">
-      <div className="flex items-start justify-between gap-4 mb-6">
+    <div id="reviews" className="scroll-mt-28 rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-card">
+      <span id="testimonials" className="block scroll-mt-28" aria-hidden="true" />
+      <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4 mb-6">
         <div>
           <div className="text-xs font-semibold tracking-[0.2em] text-gold mb-3">WHAT CLIENTS SAY</div>
           <h2 className="text-2xl lg:text-3xl font-bold">
             Words From People<br />I've Worked With
           </h2>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:text-foreground transition-colors border border-gold/30 hover:border-gold rounded-full px-3 py-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> Share yours
-        </button>
+        <div className="shrink-0 flex flex-row sm:flex-col flex-wrap items-start sm:items-end gap-2">
+          <button
+            onClick={() => setShowForm(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:text-foreground transition-colors border border-gold/30 hover:border-gold rounded-full px-3 py-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> Share yours
+          </button>
+          <ShareReviewLink />
+        </div>
       </div>
+
 
       <div ref={emblaRef} className="overflow-hidden -mx-2">
         <div className="flex">
