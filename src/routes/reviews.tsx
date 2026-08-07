@@ -4,4 +4,5 @@ export const Route = createFileRoute("/reviews")({
   beforeLoad: () => {
     throw redirect({ to: "/testimonials", hash: "reviews" });
   },
+  component: () => null,
 });
