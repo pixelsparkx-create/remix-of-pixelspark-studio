@@ -112,7 +112,7 @@ export function Testimonials() {
             Words From People<br />I've Worked With
           </h2>
         </div>
-        <div className="shrink-0 flex flex-col items-end gap-2">
+        <div className="shrink-0 flex flex-row sm:flex-col flex-wrap items-start sm:items-end gap-2">
           <button
             onClick={() => setShowForm(true)}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:text-foreground transition-colors border border-gold/30 hover:border-gold rounded-full px-3 py-1.5"
