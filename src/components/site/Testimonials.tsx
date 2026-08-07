@@ -71,7 +71,8 @@ export function Testimonials() {
   }, []);
 
   return (
-    <div id="testimonials" className="rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-card">
+    <div id="reviews" className="scroll-mt-28 rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-card">
+      <span id="testimonials" className="block scroll-mt-28" aria-hidden="true" />
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <div className="text-xs font-semibold tracking-[0.2em] text-gold mb-3">WHAT CLIENTS SAY</div>
@@ -79,13 +80,17 @@ export function Testimonials() {
             Words From People<br />I've Worked With
           </h2>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:text-foreground transition-colors border border-gold/30 hover:border-gold rounded-full px-3 py-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> Share yours
-        </button>
+        <div className="shrink-0 flex flex-col items-end gap-2">
+          <button
+            onClick={() => setShowForm(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:text-foreground transition-colors border border-gold/30 hover:border-gold rounded-full px-3 py-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> Share yours
+          </button>
+          <ShareReviewLink />
+        </div>
       </div>
+
 
       <div ref={emblaRef} className="overflow-hidden -mx-2">
         <div className="flex">
