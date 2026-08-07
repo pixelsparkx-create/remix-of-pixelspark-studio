@@ -105,7 +105,7 @@ export function Testimonials() {
   return (
     <div id="reviews" className="scroll-mt-28 rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-card">
       <span id="testimonials" className="block scroll-mt-28" aria-hidden="true" />
-      <div className="flex items-start justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4 mb-6">
         <div>
           <div className="text-xs font-semibold tracking-[0.2em] text-gold mb-3">WHAT CLIENTS SAY</div>
           <h2 className="text-2xl lg:text-3xl font-bold">
