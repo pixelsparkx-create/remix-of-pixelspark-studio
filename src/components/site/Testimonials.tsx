@@ -1,10 +1,42 @@
 import { useEffect, useState, useRef, FormEvent } from "react";
-import { Quote, Star, BadgeCheck, Plus, X, Loader2 } from "lucide-react";
+import { Quote, Star, BadgeCheck, Plus, X, Loader2, Check, Link2 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+function ShareReviewLink() {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    const url = `${window.location.origin}/reviews`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopied(true);
+    toast.success("Review link copied");
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <button
+      onClick={copy}
+      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/70 hover:text-gold transition-colors border border-border hover:border-gold/40 rounded-full px-3 py-1.5"
+    >
+      {copied ? <Check className="h-3.5 w-3.5 text-gold" /> : <Link2 className="h-3.5 w-3.5" />}
+      {copied ? "Copied" : "Share Review Link"}
+    </button>
+  );
+}
+
 
 type Testimonial = {
   id: string;
