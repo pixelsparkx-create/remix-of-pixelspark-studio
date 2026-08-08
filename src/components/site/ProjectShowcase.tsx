@@ -74,12 +74,16 @@ export function ProjectShowcase({ project, onClose }: { project: Project | null;
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={registerLiveVisit}
               className="mt-5 inline-flex items-center gap-2 bg-gradient-gold text-ink px-6 py-3 rounded-full font-semibold shadow-gold hover:shadow-[0_0_40px_rgba(212,175,55,0.6)] hover:scale-[1.03] transition-all"
             >
               View Live Project <ExternalLink className="h-4 w-4" />
             </a>
           )}
+
+          <EngagementBar counts={counts} appreciated={appreciated} onAppreciate={appreciate} />
         </div>
+
 
         <div className="mt-7 relative">
           <div ref={emblaRef} className="overflow-hidden">
