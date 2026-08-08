@@ -169,6 +169,8 @@ export function ProjectShowcase({ project, onClose }: { project: Project | null;
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={registerLiveVisit}
+
               className="mt-8 w-full inline-flex items-center justify-center gap-2 bg-ink text-ink-foreground px-6 py-3.5 rounded-full font-semibold hover:bg-gradient-gold hover:text-ink transition-all"
             >
               Visit Website <ExternalLink className="h-4 w-4" />
