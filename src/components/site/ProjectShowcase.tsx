@@ -2,14 +2,19 @@ import { useEffect, useState, useCallback } from "react";
 import { X, ExternalLink, ChevronLeft, ChevronRight, CheckCircle2, Layers, Sparkles, Users, MapPin } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { Project } from "@/lib/projects";
+import { EngagementBar, useProjectEngagement } from "@/components/site/ProjectEngagement";
 
 export function ProjectShowcase({ project, onClose }: { project: Project | null; onClose: () => void }) {
   const open = !!project;
   const [emblaRef, embla] = useEmblaCarousel({ loop: true, align: "start" });
   const [index, setIndex] = useState(0);
+  const { counts, appreciated, appreciate, registerLiveVisit } = useProjectEngagement(
+    project?.slug ?? null,
+  );
 
   const scrollPrev = useCallback(() => embla?.scrollPrev(), [embla]);
   const scrollNext = useCallback(() => embla?.scrollNext(), [embla]);
+
 
   useEffect(() => {
     if (!embla) return;
