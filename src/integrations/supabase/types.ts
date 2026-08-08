@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      project_baselines: {
+        Row: {
+          base_appreciations: number
+          base_live_visits: number
+          base_views: number
+          created_at: string
+          project_id: string
+        }
+        Insert: {
+          base_appreciations: number
+          base_live_visits: number
+          base_views: number
+          created_at?: string
+          project_id: string
+        }
+        Update: {
+          base_appreciations?: number
+          base_live_visits?: number
+          base_views?: number
+          created_at?: string
+          project_id?: string
+        }
+        Relationships: []
+      }
+      project_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          project_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          project_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          project_id?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           approved: boolean
@@ -52,7 +100,36 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ensure_project_baseline: {
+        Args: { _project_id: string }
+        Returns: undefined
+      }
+      get_project_engagement: {
+        Args: { _project_ids: string[] }
+        Returns: {
+          appreciations: number
+          live_visits: number
+          project_id: string
+          views: number
+        }[]
+      }
+      has_appreciated: {
+        Args: { _project_id: string; _visitor_id: string }
+        Returns: boolean
+      }
+      record_project_interaction: {
+        Args: {
+          _interaction_type: string
+          _project_id: string
+          _visitor_id: string
+        }
+        Returns: {
+          appreciations: number
+          live_visits: number
+          project_id: string
+          views: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
