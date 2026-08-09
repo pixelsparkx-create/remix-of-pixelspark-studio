@@ -1,5 +1,6 @@
-import { Check, Sparkles, Crown } from "lucide-react";
+import { Check, Sparkles, Crown, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ContactModal } from "./ContactModal";
 
 const plans = [
@@ -88,6 +89,14 @@ export function Pricing() {
             </div>
           );
         })}
+      </div>
+      <div className="mt-8 text-center">
+        <Link
+          to="/pricing-guide"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gold hover:gap-3 transition-all"
+        >
+          See exactly what's included & what can affect your final price <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
       <ContactModal open={!!selected} plan={selected ?? ""} onClose={() => setSelected(null)} />
     </div>
