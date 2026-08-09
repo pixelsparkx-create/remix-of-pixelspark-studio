@@ -85,6 +85,17 @@ function AdminPage() {
     setStatus("signed-out");
   }
 
+  async function onGoogle() {
+    setError(null);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}/admin`,
+    });
+    if (result.error) return setError(String((result.error as any).message ?? result.error));
+    if (result.redirected) return;
+    setStatus("loading");
+    void check();
+  }
+
   if (status === "loading") {
     return (
       <main className="min-h-screen grid place-items-center bg-background">
