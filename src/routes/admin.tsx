@@ -269,7 +269,7 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
                   <div key={p.slug} className="rounded-2xl border border-border bg-card p-5 hover:border-gold/60 transition-colors">
                     <div className="text-xs tracking-[0.15em] text-gold">{p.category?.toUpperCase?.() ?? ""}</div>
                     <div className="font-semibold mt-1">{p.title}</div>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{p.tagline ?? p.summary ?? ""}</p>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{p.description}</p>
                     <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
                         <Heart className="h-3.5 w-3.5 text-gold" /> {formatCount(Number(e?.appreciations ?? 0))}
