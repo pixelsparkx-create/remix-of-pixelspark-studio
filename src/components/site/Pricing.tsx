@@ -1,5 +1,6 @@
-import { Check, Sparkles, Crown } from "lucide-react";
+import { Check, Sparkles, Crown, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ContactModal } from "./ContactModal";
 
 const plans = [
