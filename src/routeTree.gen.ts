@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as PricingGuideRouteImport } from './routes/pricing-guide'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -37,6 +38,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const ReviewsRoute = ReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingGuideRoute = PricingGuideRouteImport.update({
+  id: '/pricing-guide',
+  path: '/pricing-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/pricing-guide': typeof PricingGuideRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/pricing-guide': typeof PricingGuideRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
+  '/pricing-guide': typeof PricingGuideRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/testimonials': typeof TestimonialsRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/pricing-guide'
     | '/reviews'
     | '/services'
     | '/testimonials'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/pricing-guide'
     | '/reviews'
     | '/services'
     | '/testimonials'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/portfolio'
     | '/pricing'
+    | '/pricing-guide'
     | '/reviews'
     | '/services'
     | '/testimonials'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   PortfolioRoute: typeof PortfolioRoute
   PricingRoute: typeof PricingRoute
+  PricingGuideRoute: typeof PricingGuideRoute
   ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
   TestimonialsRoute: typeof TestimonialsRoute
@@ -236,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/reviews'
       preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing-guide': {
+      id: '/pricing-guide'
+      path: '/pricing-guide'
+      fullPath: '/pricing-guide'
+      preLoaderRoute: typeof PricingGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   PortfolioRoute: PortfolioRoute,
   PricingRoute: PricingRoute,
+  PricingGuideRoute: PricingGuideRoute,
   ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
   TestimonialsRoute: TestimonialsRoute,
