@@ -141,6 +141,16 @@ function AdminPage() {
               >
                 {busy ? "Signing in…" : "Sign in"}
               </button>
+              <div className="my-2 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
+              </div>
+              <button
+                type="button"
+                onClick={onGoogle}
+                className="w-full rounded-full border border-border px-5 py-3 font-semibold hover:border-gold hover:text-gold transition-colors"
+              >
+                Continue with Google
+              </button>
             </form>
           )}
         </div>
