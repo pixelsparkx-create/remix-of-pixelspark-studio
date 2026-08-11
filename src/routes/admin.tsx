@@ -252,6 +252,16 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
     setTestimonials((prev) => prev.filter((t) => t.id !== id));
   }
 
+  async function setLeadStatus(id: string, status: string) {
+    await supabase.from("goldie_leads").update({ status }).eq("id", id);
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+  }
+
+  async function deleteLead(id: string) {
+    await supabase.from("goldie_leads").delete().eq("id", id);
+    setLeads((prev) => prev.filter((l) => l.id !== id));
+  }
+
   const engagementBySlug = new Map(engagement.map((e) => [e.project_id, e]));
 
   return (
