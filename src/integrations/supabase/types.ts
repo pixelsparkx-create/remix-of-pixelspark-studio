@@ -29,6 +29,72 @@ export type Database = {
         }
         Relationships: []
       }
+      goldie_leads: {
+        Row: {
+          admin_notes: string | null
+          business_name: string | null
+          business_type: string | null
+          client_name: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          conversation_summary: string | null
+          created_at: string
+          estimated_range: string | null
+          id: string
+          location: string | null
+          priority: string
+          project_state: Json
+          project_type: string | null
+          proposal_markdown: string | null
+          recommended_plan: string | null
+          status: string
+          timeline: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          client_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          conversation_summary?: string | null
+          created_at?: string
+          estimated_range?: string | null
+          id?: string
+          location?: string | null
+          priority?: string
+          project_state?: Json
+          project_type?: string | null
+          proposal_markdown?: string | null
+          recommended_plan?: string | null
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          client_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          conversation_summary?: string | null
+          created_at?: string
+          estimated_range?: string | null
+          id?: string
+          location?: string | null
+          priority?: string
+          project_state?: Json
+          project_type?: string | null
+          proposal_markdown?: string | null
+          recommended_plan?: string | null
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       project_baselines: {
         Row: {
           base_appreciations: number

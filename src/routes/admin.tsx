@@ -19,6 +19,8 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
+  Inbox,
+  ChevronDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -49,6 +51,28 @@ type Testimonial = {
 };
 
 type Engagement = { project_id: string; appreciations: number; views: number; live_visits: number };
+
+type Lead = {
+  id: string;
+  client_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  business_name: string | null;
+  business_type: string | null;
+  location: string | null;
+  project_type: string | null;
+  recommended_plan: string | null;
+  estimated_range: string | null;
+  timeline: string | null;
+  project_state: Record<string, unknown> | null;
+  conversation_summary: string | null;
+  proposal_markdown: string | null;
+  priority: string;
+  status: string;
+  created_at: string;
+};
+
+const LEAD_STATUSES = ["new", "reviewing", "contacted", "quoted", "in progress", "closed"] as const;
 
 type Status = "loading" | "signed-out" | "unauthorized" | "admin";
 
@@ -175,6 +199,7 @@ function AdminPage() {
 
 const modules = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "leads", label: "AI Leads", icon: Inbox },
   { id: "portfolio", label: "Portfolio", icon: FolderKanban },
   { id: "testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -186,18 +211,21 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
   const [tab, setTab] = useState<ModuleId>("overview");
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [engagement, setEngagement] = useState<Engagement[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
   const slugs = useMemo(() => projects.map((p) => p.slug), []);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [t, e] = await Promise.all([
+    const [t, e, l] = await Promise.all([
       supabase.from("testimonials").select("*").order("created_at", { ascending: false }),
       (supabase as any).rpc("get_project_engagement", { _project_ids: slugs }),
+      supabase.from("goldie_leads").select("*").order("created_at", { ascending: false }),
     ]);
     setTestimonials((t.data as Testimonial[]) ?? []);
     setEngagement((e.data as Engagement[]) ?? []);
+    setLeads((l.data as unknown as Lead[]) ?? []);
     setLoading(false);
   }, [slugs]);
 
@@ -222,6 +250,16 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
   async function remove(id: string) {
     await supabase.from("testimonials").delete().eq("id", id);
     setTestimonials((prev) => prev.filter((t) => t.id !== id));
+  }
+
+  async function setLeadStatus(id: string, status: string) {
+    await supabase.from("goldie_leads").update({ status }).eq("id", id);
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+  }
+
+  async function deleteLead(id: string) {
+    await supabase.from("goldie_leads").delete().eq("id", id);
+    setLeads((prev) => prev.filter((l) => l.id !== id));
   }
 
   const engagementBySlug = new Map(engagement.map((e) => [e.project_id, e]));
@@ -282,7 +320,15 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
                 value={String(testimonials.filter((t) => !t.approved).length)}
                 icon={ShieldCheck}
               />
+              <Stat
+                label="Goldie Leads"
+                value={`${leads.filter((l) => l.status === "new").length} / ${leads.length}`}
+                hint="new / total"
+                icon={Inbox}
+              />
             </div>
+          ) : tab === "leads" ? (
+            <LeadsPanel leads={leads} onStatus={setLeadStatus} onDelete={deleteLead} />
           ) : tab === "portfolio" ? (
             <div className="grid md:grid-cols-2 gap-5">
               {projects.map((p) => {
@@ -404,6 +450,148 @@ function Stat({
       <div className="text-3xl font-bold">{value}</div>
       <div className="text-sm text-muted-foreground mt-1">{label}</div>
       {hint && <div className="text-xs text-muted-foreground/70">{hint}</div>}
+    </div>
+  );
+}
+
+function LeadsPanel({
+  leads,
+  onStatus,
+  onDelete,
+}: {
+  leads: Lead[];
+  onStatus: (id: string, status: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  if (leads.length === 0) {
+    return <p className="text-sm text-muted-foreground">No AI project briefs yet. Goldie will collect them here.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      {leads.map((lead) => {
+        const state = (lead.project_state ?? {}) as Record<string, unknown>;
+        const open = openId === lead.id;
+        const list = (key: string) => (Array.isArray(state[key]) ? (state[key] as string[]) : []);
+        return (
+          <div key={lead.id} className="rounded-2xl border border-border bg-card p-5">
+            <div className="flex flex-wrap items-start gap-3 justify-between">
+              <div className="min-w-0">
+                <div className="font-semibold">
+                  {lead.business_name ?? lead.client_name ?? "Unnamed project"}{" "}
+                  <span className="text-xs text-muted-foreground font-normal">
+                    #{lead.id.slice(0, 8).toUpperCase()}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {[lead.client_name, lead.business_type, lead.location, lead.project_type]
+                    .filter(Boolean)
+                    .join(" · ") || "—"}
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {[lead.contact_email, lead.contact_phone].filter(Boolean).join(" · ") || "No contact details given"}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {lead.priority === "high" && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border border-gold text-gold">
+                    High
+                  </span>
+                )}
+                <select
+                  value={lead.status}
+                  onChange={(e) => onStatus(lead.id, e.target.value)}
+                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs uppercase tracking-wider"
+                >
+                  {LEAD_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+              <span>Plan: <strong className="text-foreground">{lead.recommended_plan ?? "—"}</strong></span>
+              <span>Estimate: <strong className="text-foreground">{lead.estimated_range ?? "—"}</strong></span>
+              <span>Timeline: <strong className="text-foreground">{lead.timeline ?? "—"}</strong></span>
+              <span>{new Date(lead.created_at).toLocaleString()}</span>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => setOpenId(open ? null : lead.id)}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+              >
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+                {open ? "Hide details" : "View brief"}
+              </button>
+              {lead.contact_phone && (
+                <a
+                  href={`https://wa.me/${lead.contact_phone.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+                >
+                  WhatsApp
+                </a>
+              )}
+              {lead.contact_email && (
+                <a
+                  href={`mailto:${lead.contact_email}`}
+                  className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+                >
+                  Email
+                </a>
+              )}
+              <button
+                onClick={() => onDelete(lead.id)}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 text-destructive hover:border-destructive transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+
+            {open && (
+              <div className="mt-5 grid gap-5 md:grid-cols-2 border-t border-border pt-5 text-sm">
+                <div className="space-y-3">
+                  <Detail label="Business summary" value={(state["target_audience"] as string) ?? "—"} />
+                  <Detail label="Goals" value={list("business_goals").join(", ") || "—"} />
+                  <Detail label="Pages" value={list("required_pages").join(", ") || "—"} />
+                  <Detail label="Features" value={list("required_features").join(", ") || "—"} />
+                  <Detail label="Integrations" value={list("required_integrations").join(", ") || "—"} />
+                  <Detail label="Design direction" value={(state["design_direction"] as string) ?? "—"} />
+                  <Detail label="Complexity" value={(state["complexity"] as string) ?? "—"} />
+                  <Detail label="Budget" value={(state["budget"] as string) ?? "—"} />
+                </div>
+                <div className="space-y-3">
+                  <Detail label="Conversation summary" value={lead.conversation_summary ?? "—"} />
+                  {lead.proposal_markdown && (
+                    <div>
+                      <div className="text-[11px] tracking-[0.15em] text-gold">PROPOSAL</div>
+                      <pre className="mt-1 whitespace-pre-wrap font-sans text-sm text-muted-foreground max-h-80 overflow-y-auto">
+                        {lead.proposal_markdown}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[11px] tracking-[0.15em] text-gold">{label.toUpperCase()}</div>
+      <div className="text-sm text-muted-foreground">{value}</div>
     </div>
   );
 }
