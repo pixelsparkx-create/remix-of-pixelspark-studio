@@ -3,6 +3,7 @@ import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { PageTransition } from "./PageTransition";
+import { Goldie } from "./Goldie";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      <Goldie />
     </div>
   );
 }

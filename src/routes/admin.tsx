@@ -175,6 +175,7 @@ function AdminPage() {
 
 const modules = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "leads", label: "AI Leads", icon: Inbox },
   { id: "portfolio", label: "Portfolio", icon: FolderKanban },
   { id: "testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
