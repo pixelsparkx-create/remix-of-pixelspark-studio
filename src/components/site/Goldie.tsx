@@ -15,6 +15,8 @@ import {
   Linkedin,
   ArrowLeft,
   RotateCcw,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import {
   mergeBrief,
@@ -25,8 +27,11 @@ import {
   STORAGE_KEY,
   type GoldieBrief,
 } from "@/lib/goldie/brief";
+import { downloadProposal } from "@/lib/goldie/proposal";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { LINKEDIN_URL } from "@/lib/contact";
 import { toast } from "sonner";
+
 
 const QUICK_STARTS = [
   "🚀 I need a website",
