@@ -19,6 +19,8 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
+  Inbox,
+  ChevronDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
