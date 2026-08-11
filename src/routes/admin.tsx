@@ -310,7 +310,15 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
                 value={String(testimonials.filter((t) => !t.approved).length)}
                 icon={ShieldCheck}
               />
+              <Stat
+                label="Goldie Leads"
+                value={`${leads.filter((l) => l.status === "new").length} / ${leads.length}`}
+                hint="new / total"
+                icon={Inbox}
+              />
             </div>
+          ) : tab === "leads" ? (
+            <LeadsPanel leads={leads} onStatus={setLeadStatus} onDelete={deleteLead} />
           ) : tab === "portfolio" ? (
             <div className="grid md:grid-cols-2 gap-5">
               {projects.map((p) => {
