@@ -189,18 +189,21 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
   const [tab, setTab] = useState<ModuleId>("overview");
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [engagement, setEngagement] = useState<Engagement[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
   const slugs = useMemo(() => projects.map((p) => p.slug), []);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [t, e] = await Promise.all([
+    const [t, e, l] = await Promise.all([
       supabase.from("testimonials").select("*").order("created_at", { ascending: false }),
       (supabase as any).rpc("get_project_engagement", { _project_ids: slugs }),
+      supabase.from("goldie_leads").select("*").order("created_at", { ascending: false }),
     ]);
     setTestimonials((t.data as Testimonial[]) ?? []);
     setEngagement((e.data as Engagement[]) ?? []);
+    setLeads((l.data as unknown as Lead[]) ?? []);
     setLoading(false);
   }, [slugs]);
 
