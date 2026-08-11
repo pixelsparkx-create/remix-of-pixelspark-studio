@@ -52,6 +52,28 @@ type Testimonial = {
 
 type Engagement = { project_id: string; appreciations: number; views: number; live_visits: number };
 
+type Lead = {
+  id: string;
+  client_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  business_name: string | null;
+  business_type: string | null;
+  location: string | null;
+  project_type: string | null;
+  recommended_plan: string | null;
+  estimated_range: string | null;
+  timeline: string | null;
+  project_state: Record<string, unknown> | null;
+  conversation_summary: string | null;
+  proposal_markdown: string | null;
+  priority: string;
+  status: string;
+  created_at: string;
+};
+
+const LEAD_STATUSES = ["new", "reviewing", "contacted", "quoted", "in progress", "closed"] as const;
+
 type Status = "loading" | "signed-out" | "unauthorized" | "admin";
 
 function AdminPage() {
