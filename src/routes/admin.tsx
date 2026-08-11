@@ -453,3 +453,145 @@ function Stat({
     </div>
   );
 }
+
+function LeadsPanel({
+  leads,
+  onStatus,
+  onDelete,
+}: {
+  leads: Lead[];
+  onStatus: (id: string, status: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  if (leads.length === 0) {
+    return <p className="text-sm text-muted-foreground">No AI project briefs yet. Goldie will collect them here.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      {leads.map((lead) => {
+        const state = (lead.project_state ?? {}) as Record<string, unknown>;
+        const open = openId === lead.id;
+        const list = (key: string) => (Array.isArray(state[key]) ? (state[key] as string[]) : []);
+        return (
+          <div key={lead.id} className="rounded-2xl border border-border bg-card p-5">
+            <div className="flex flex-wrap items-start gap-3 justify-between">
+              <div className="min-w-0">
+                <div className="font-semibold">
+                  {lead.business_name ?? lead.client_name ?? "Unnamed project"}{" "}
+                  <span className="text-xs text-muted-foreground font-normal">
+                    #{lead.id.slice(0, 8).toUpperCase()}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {[lead.client_name, lead.business_type, lead.location, lead.project_type]
+                    .filter(Boolean)
+                    .join(" · ") || "—"}
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  {[lead.contact_email, lead.contact_phone].filter(Boolean).join(" · ") || "No contact details given"}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {lead.priority === "high" && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border border-gold text-gold">
+                    High
+                  </span>
+                )}
+                <select
+                  value={lead.status}
+                  onChange={(e) => onStatus(lead.id, e.target.value)}
+                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs uppercase tracking-wider"
+                >
+                  {LEAD_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+              <span>Plan: <strong className="text-foreground">{lead.recommended_plan ?? "—"}</strong></span>
+              <span>Estimate: <strong className="text-foreground">{lead.estimated_range ?? "—"}</strong></span>
+              <span>Timeline: <strong className="text-foreground">{lead.timeline ?? "—"}</strong></span>
+              <span>{new Date(lead.created_at).toLocaleString()}</span>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => setOpenId(open ? null : lead.id)}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+              >
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+                {open ? "Hide details" : "View brief"}
+              </button>
+              {lead.contact_phone && (
+                <a
+                  href={`https://wa.me/${lead.contact_phone.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+                >
+                  WhatsApp
+                </a>
+              )}
+              {lead.contact_email && (
+                <a
+                  href={`mailto:${lead.contact_email}`}
+                  className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+                >
+                  Email
+                </a>
+              )}
+              <button
+                onClick={() => onDelete(lead.id)}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 text-destructive hover:border-destructive transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+
+            {open && (
+              <div className="mt-5 grid gap-5 md:grid-cols-2 border-t border-border pt-5 text-sm">
+                <div className="space-y-3">
+                  <Detail label="Business summary" value={(state["target_audience"] as string) ?? "—"} />
+                  <Detail label="Goals" value={list("business_goals").join(", ") || "—"} />
+                  <Detail label="Pages" value={list("required_pages").join(", ") || "—"} />
+                  <Detail label="Features" value={list("required_features").join(", ") || "—"} />
+                  <Detail label="Integrations" value={list("required_integrations").join(", ") || "—"} />
+                  <Detail label="Design direction" value={(state["design_direction"] as string) ?? "—"} />
+                  <Detail label="Complexity" value={(state["complexity"] as string) ?? "—"} />
+                  <Detail label="Budget" value={(state["budget"] as string) ?? "—"} />
+                </div>
+                <div className="space-y-3">
+                  <Detail label="Conversation summary" value={lead.conversation_summary ?? "—"} />
+                  {lead.proposal_markdown && (
+                    <div>
+                      <div className="text-[11px] tracking-[0.15em] text-gold">PROPOSAL</div>
+                      <pre className="mt-1 whitespace-pre-wrap font-sans text-sm text-muted-foreground max-h-80 overflow-y-auto">
+                        {lead.proposal_markdown}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[11px] tracking-[0.15em] text-gold">{label.toUpperCase()}</div>
+      <div className="text-sm text-muted-foreground">{value}</div>
+    </div>
+  );
+}
