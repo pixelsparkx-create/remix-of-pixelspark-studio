@@ -239,7 +239,22 @@ function GoldiePanel({
               </div>
             )}
 
+            {!busy && messages.length > 1 && suggestions.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    className="rounded-full border border-gold/40 bg-gold/5 px-3 py-1.5 text-xs text-gold hover:bg-gold/10 transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {error && (
+
               <p className="text-xs text-destructive">
                 Goldie hit a snag. Try again, or reach PixelSpark directly on WhatsApp.
               </p>
