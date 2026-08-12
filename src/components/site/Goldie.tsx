@@ -288,10 +288,26 @@ function GoldiePanel({
                   send(input);
                 }
               }}
-              placeholder="Tell Goldie about your business…"
+              placeholder={voice.listening ? "Listening… speak now" : "Tell Goldie about your business…"}
               className="flex-1 resize-none max-h-32 rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-gold"
             />
+            {voice.supported && (
+              <button
+                type="button"
+                onClick={voice.toggle}
+                aria-label={voice.listening ? "Stop voice input" : "Speak to Goldie"}
+                aria-pressed={voice.listening}
+                className={`h-10 w-10 shrink-0 rounded-full grid place-items-center border transition-colors ${
+                  voice.listening
+                    ? "border-gold bg-gold/15 text-gold animate-pulse"
+                    : "border-border text-muted-foreground hover:border-gold hover:text-gold"
+                }`}
+              >
+                {voice.listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </button>
+            )}
             <button
+
               type="submit"
               disabled={busy || !input.trim()}
               aria-label="Send message"
