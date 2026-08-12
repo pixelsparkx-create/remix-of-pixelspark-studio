@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { projects } from "@/lib/projects";
+import { downloadProposal } from "@/lib/goldie/proposal";
+import type { GoldieBrief } from "@/lib/goldie/brief";
 import { formatCount } from "@/lib/engagement";
 import {
   Heart,
