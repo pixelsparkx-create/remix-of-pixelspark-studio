@@ -15,6 +15,8 @@ import {
   Linkedin,
   ArrowLeft,
   RotateCcw,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import {
   mergeBrief,
@@ -25,8 +27,11 @@ import {
   STORAGE_KEY,
   type GoldieBrief,
 } from "@/lib/goldie/brief";
+import { downloadProposal } from "@/lib/goldie/proposal";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { LINKEDIN_URL } from "@/lib/contact";
 import { toast } from "sonner";
+
 
 const QUICK_STARTS = [
   "🚀 I need a website",
@@ -145,6 +150,42 @@ function GoldiePanel({
     return mergeBrief(acc, manual);
   }, [messages, manual]);
 
+  const voiceBaseRef = useRef("");
+  const voice = useVoiceInput(
+    useCallback((text: string, final: boolean) => {
+      setInput((prev) => {
+        const base = final ? prev : voiceBaseRef.current;
+        const next = `${base}${base && !base.endsWith(" ") ? " " : ""}${text}`;
+        if (final) voiceBaseRef.current = next;
+        return next;
+      });
+    }, []),
+  );
+
+  useEffect(() => {
+    if (voice.listening) voiceBaseRef.current = input;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voice.listening]);
+
+  useEffect(() => {
+    if (voice.error) toast.error(voice.error);
+  }, [voice.error]);
+
+  // Clickable follow-up suggestions from the most recent assistant turn.
+  const suggestions = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const m = messages[i];
+      if (m.role === "user") return [];
+      for (const part of m.parts ?? []) {
+        if (part.type === "tool-suggest_replies") {
+          const list = (part as { input?: { suggestions?: unknown } }).input?.suggestions;
+          if (Array.isArray(list)) return list.map(String).filter(Boolean).slice(0, 4);
+        }
+      }
+    }
+    return [];
+  }, [messages]);
+
   const send = useCallback(
     (text: string) => {
       const value = text.trim();
@@ -219,7 +260,22 @@ function GoldiePanel({
               </div>
             )}
 
+            {!busy && messages.length > 1 && suggestions.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    className="rounded-full border border-gold/40 bg-gold/5 px-3 py-1.5 text-xs text-gold hover:bg-gold/10 transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {error && (
+
               <p className="text-xs text-destructive">
                 Goldie hit a snag. Try again, or reach PixelSpark directly on WhatsApp.
               </p>
@@ -253,10 +309,26 @@ function GoldiePanel({
                   send(input);
                 }
               }}
-              placeholder="Tell Goldie about your business…"
+              placeholder={voice.listening ? "Listening… speak now" : "Tell Goldie about your business…"}
               className="flex-1 resize-none max-h-32 rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-gold"
             />
+            {voice.supported && (
+              <button
+                type="button"
+                onClick={voice.toggle}
+                aria-label={voice.listening ? "Stop voice input" : "Speak to Goldie"}
+                aria-pressed={voice.listening}
+                className={`h-10 w-10 shrink-0 rounded-full grid place-items-center border transition-colors ${
+                  voice.listening
+                    ? "border-gold bg-gold/15 text-gold animate-pulse"
+                    : "border-border text-muted-foreground hover:border-gold hover:text-gold"
+                }`}
+              >
+                {voice.listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </button>
+            )}
             <button
+
               type="submit"
               disabled={busy || !input.trim()}
               aria-label="Send message"
@@ -406,7 +478,9 @@ function ReviewBrief({
 
       <div className="grid gap-2">
         <button
-          onClick={() => downloadProposal(brief)}
+          onClick={() => {
+            if (!downloadProposal(brief)) toast.error("Allow pop-ups to download your project summary.");
+          }}
           className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold hover:border-gold hover:text-gold transition-colors"
         >
           <Download className="h-4 w-4" /> Download project summary
@@ -477,64 +551,4 @@ function SentView({ brief, onBack }: { brief: GoldieBrief; onBack: () => void })
       </div>
     </div>
   );
-}
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c] ?? c);
-}
-
-function downloadProposal(brief: GoldieBrief) {
-  const body = (brief.proposal_markdown ?? brief.conversation_summary ?? "")
-    .split("\n")
-    .map((line) => {
-      const safe = escapeHtml(line).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-      if (/^#{3}\s/.test(line)) return `<h3>${safe.replace(/^###\s/, "")}</h3>`;
-      if (/^#{2}\s/.test(line)) return `<h2>${safe.replace(/^##\s/, "")}</h2>`;
-      if (/^#\s/.test(line)) return `<h2>${safe.replace(/^#\s/, "")}</h2>`;
-      if (/^[-*]\s/.test(line)) return `<li>${safe.replace(/^[-*]\s/, "")}</li>`;
-      if (!line.trim()) return "";
-      return `<p>${safe}</p>`;
-    })
-    .join("\n");
-
-  const html = `<!doctype html><html><head><meta charset="utf-8" />
-<title>PixelSpark Project Summary${brief.business_name ? ` — ${escapeHtml(brief.business_name)}` : ""}</title>
-<style>
-  @page { margin: 18mm; }
-  body { font-family: -apple-system, "Segoe UI", Inter, sans-serif; color:#111; line-height:1.6; }
-  header { border-bottom:3px solid #C9A227; padding-bottom:14px; margin-bottom:24px; }
-  .brand { font-size:24px; font-weight:800; letter-spacing:-0.5px; }
-  .brand span { color:#C9A227; }
-  .kicker { font-size:11px; letter-spacing:3px; color:#8a8a8a; text-transform:uppercase; }
-  h2 { font-size:15px; letter-spacing:1px; text-transform:uppercase; color:#C9A227; margin:22px 0 6px; }
-  h3 { font-size:14px; margin:16px 0 4px; }
-  li { margin-left:18px; }
-  .meta { background:#faf7ee; border:1px solid #eadfbe; border-radius:12px; padding:14px; margin:18px 0; font-size:13px; }
-  footer { margin-top:28px; border-top:1px solid #ddd; padding-top:12px; font-size:11px; color:#666; }
-</style></head><body>
-<header>
-  <div class="kicker">Project Discovery Summary</div>
-  <div class="brand">PIXEL<span>SPARK</span></div>
-</header>
-<div class="meta">
-  <strong>${escapeHtml(brief.business_name ?? brief.client_name ?? "Your project")}</strong><br/>
-  Recommended package: ${escapeHtml(brief.recommended_plan ?? "—")}<br/>
-  Estimated project range: ${escapeHtml(brief.estimated_range ?? "—")}<br/>
-  Estimated timeline: ${escapeHtml(brief.estimated_timeline ?? brief.timeline ?? "—")}
-</div>
-${body}
-<footer>
-  Estimated project range — final quote subject to scope confirmation. This is a project proposal / discovery summary, not an invoice.<br/>
-  PixelSpark · Mohammed · WhatsApp +234 708 158 0318 · pixelsparkx@gmail.com
-</footer>
-<script>window.onload = () => window.print();</script>
-</body></html>`;
-
-  const win = window.open("", "_blank", "noopener,noreferrer,width=900,height=1000");
-  if (!win) {
-    toast.error("Allow pop-ups to download your project summary.");
-    return;
-  }
-  win.document.write(html);
-  win.document.close();
 }

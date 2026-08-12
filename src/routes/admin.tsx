@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { projects } from "@/lib/projects";
+import { downloadProposal } from "@/lib/goldie/proposal";
+import type { GoldieBrief } from "@/lib/goldie/brief";
 import { formatCount } from "@/lib/engagement";
 import {
   Heart,
@@ -464,6 +466,30 @@ function LeadsPanel({
   onDelete: (id: string) => void;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<string>("all");
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return leads.filter((lead) => {
+      if (filter !== "all" && lead.status !== filter) return false;
+      if (!q) return true;
+      return [
+        lead.client_name,
+        lead.business_name,
+        lead.business_type,
+        lead.location,
+        lead.project_type,
+        lead.contact_email,
+        lead.contact_phone,
+        lead.recommended_plan,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+    });
+  }, [leads, query, filter]);
 
   if (leads.length === 0) {
     return <p className="text-sm text-muted-foreground">No AI project briefs yet. Goldie will collect them here.</p>;
@@ -471,7 +497,34 @@ function LeadsPanel({
 
   return (
     <div className="space-y-4">
-      {leads.map((lead) => {
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search leads by name, business, contact…"
+          className="flex-1 min-w-[220px] rounded-full border border-border bg-background px-4 py-2 text-sm outline-none focus:border-gold"
+        />
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="rounded-full border border-border bg-background px-3 py-2 text-xs uppercase tracking-wider"
+        >
+          <option value="all">All statuses</option>
+          {LEAD_STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s.toUpperCase()}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-muted-foreground">
+          {visible.length} of {leads.length}
+        </span>
+      </div>
+
+      {visible.length === 0 && <p className="text-sm text-muted-foreground">No leads match this filter.</p>}
+
+      {visible.map((lead) => {
+
         const state = (lead.project_state ?? {}) as Record<string, unknown>;
         const open = openId === lead.id;
         const list = (key: string) => (Array.isArray(state[key]) ? (state[key] as string[]) : []);
@@ -548,6 +601,25 @@ function LeadsPanel({
                 </a>
               )}
               <button
+                onClick={() => {
+                  const ok = downloadProposal({
+                    ...(state as GoldieBrief),
+                    business_name: lead.business_name ?? undefined,
+                    client_name: lead.client_name ?? undefined,
+                    recommended_plan: lead.recommended_plan ?? undefined,
+                    estimated_range: lead.estimated_range ?? undefined,
+                    timeline: lead.timeline ?? undefined,
+                    proposal_markdown: lead.proposal_markdown ?? undefined,
+                    conversation_summary: lead.conversation_summary ?? undefined,
+                  });
+                  if (!ok) alert("Allow pop-ups to export this proposal as a PDF.");
+                }}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+              >
+                Export PDF
+              </button>
+              <button
+
                 onClick={() => onDelete(lead.id)}
                 className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 text-destructive hover:border-destructive transition-colors"
               >

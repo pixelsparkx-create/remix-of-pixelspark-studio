@@ -66,7 +66,16 @@ export const Route = createFileRoute("/api/goldie")({
                 inputSchema: briefSchema,
                 execute: async () => ({ saved: true }),
               }),
+              suggest_replies: tool({
+                description:
+                  "Offer 2-4 short, clickable reply suggestions the visitor can tap to answer your latest question or explore an option they may not have considered. Call this alongside your reply whenever useful.",
+                inputSchema: z.object({
+                  suggestions: z.array(z.string().max(60)).min(2).max(4),
+                }),
+                execute: async () => ({ shown: true }),
+              }),
             },
+
           });
 
           const response = result.toUIMessageStreamResponse({

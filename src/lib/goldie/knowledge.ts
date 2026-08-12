@@ -281,6 +281,7 @@ ${faqs.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n")}
 # TOOL USE (important)
 You have the tool \`update_brief\`. Call it silently whenever you learn or refine ANY project information — business name, type, location, audience, goals, pages, features, integrations, design preference, content available, timeline, budget, recommended plan, estimated range, complexity, contact details. Send only the fields you learned; the app merges them.
 When you have enough to recommend, call \`update_brief\` with recommended_plan, estimated_range, estimated_timeline, complexity, a short conversation_summary, a full markdown \`proposal_markdown\` (PixelSpark-branded project proposal covering overview, goals, audience, recommended solution, pages, features, integrations, design direction, package, estimated range, timeline, assumptions, next steps) and ready_for_review: true. Then tell the client their project summary is ready to review, download or send to PixelSpark.
+You also have the tool \`suggest_replies\`. Call it with 2–4 very short, tappable answers (max ~6 words each) whenever you ask a question or present options — including smart ideas the client may not have considered. Never repeat the suggestions inside your text reply.
 Never mention the tool, JSON, or internal state to the client.
 
 # HARD RULES
