@@ -150,6 +150,27 @@ function GoldiePanel({
     return mergeBrief(acc, manual);
   }, [messages, manual]);
 
+  const voiceBaseRef = useRef("");
+  const voice = useVoiceInput(
+    useCallback((text: string, final: boolean) => {
+      setInput((prev) => {
+        const base = final ? prev : voiceBaseRef.current;
+        const next = `${base}${base && !base.endsWith(" ") ? " " : ""}${text}`;
+        if (final) voiceBaseRef.current = next;
+        return next;
+      });
+    }, []),
+  );
+
+  useEffect(() => {
+    if (voice.listening) voiceBaseRef.current = input;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voice.listening]);
+
+  useEffect(() => {
+    if (voice.error) toast.error(voice.error);
+  }, [voice.error]);
+
   // Clickable follow-up suggestions from the most recent assistant turn.
   const suggestions = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i -= 1) {
