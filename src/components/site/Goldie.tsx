@@ -99,7 +99,9 @@ export function Goldie() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Goldie" : "Chat with Goldie, PixelSpark's AI assistant"}
         aria-expanded={open}
-        className="fixed bottom-24 right-5 z-[70] group inline-flex items-center gap-2 rounded-full border border-gold/40 bg-card/95 backdrop-blur px-4 py-3 shadow-card transition-all duration-300 hover:shadow-gold hover:border-gold hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className={`fixed bottom-24 right-5 z-[70] group items-center gap-2 rounded-full border border-gold/40 bg-card/95 backdrop-blur px-4 py-3 shadow-card transition-all duration-300 hover:shadow-gold hover:border-gold hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+          open ? "hidden sm:inline-flex" : "inline-flex"
+        }`}
       >
         <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-gradient-gold text-ink">
           {!open && (
