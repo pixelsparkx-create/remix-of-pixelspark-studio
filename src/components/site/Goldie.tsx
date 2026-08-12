@@ -150,6 +150,21 @@ function GoldiePanel({
     return mergeBrief(acc, manual);
   }, [messages, manual]);
 
+  // Clickable follow-up suggestions from the most recent assistant turn.
+  const suggestions = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const m = messages[i];
+      if (m.role === "user") return [];
+      for (const part of m.parts ?? []) {
+        if (part.type === "tool-suggest_replies") {
+          const list = (part as { input?: { suggestions?: unknown } }).input?.suggestions;
+          if (Array.isArray(list)) return list.map(String).filter(Boolean).slice(0, 4);
+        }
+      }
+    }
+    return [];
+  }, [messages]);
+
   const send = useCallback(
     (text: string) => {
       const value = text.trim();
