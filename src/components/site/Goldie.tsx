@@ -411,7 +411,9 @@ function ReviewBrief({
 
       <div className="grid gap-2">
         <button
-          onClick={() => downloadProposal(brief)}
+          onClick={() => {
+            if (!downloadProposal(brief)) toast.error("Allow pop-ups to download your project summary.");
+          }}
           className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold hover:border-gold hover:text-gold transition-colors"
         >
           <Download className="h-4 w-4" /> Download project summary
