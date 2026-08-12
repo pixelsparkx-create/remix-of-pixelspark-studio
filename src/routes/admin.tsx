@@ -599,6 +599,25 @@ function LeadsPanel({
                 </a>
               )}
               <button
+                onClick={() => {
+                  const ok = downloadProposal({
+                    ...(state as GoldieBrief),
+                    business_name: lead.business_name ?? undefined,
+                    client_name: lead.client_name ?? undefined,
+                    recommended_plan: lead.recommended_plan ?? undefined,
+                    estimated_range: lead.estimated_range ?? undefined,
+                    timeline: lead.timeline ?? undefined,
+                    proposal_markdown: lead.proposal_markdown ?? undefined,
+                    conversation_summary: lead.conversation_summary ?? undefined,
+                  });
+                  if (!ok) alert("Allow pop-ups to export this proposal as a PDF.");
+                }}
+                className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 hover:border-gold hover:text-gold transition-colors"
+              >
+                Export PDF
+              </button>
+              <button
+
                 onClick={() => onDelete(lead.id)}
                 className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border px-4 py-2 text-destructive hover:border-destructive transition-colors"
               >
