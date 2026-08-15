@@ -29,6 +29,154 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          created_at: string
+          detail: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      error_events: {
+        Row: {
+          admin_notes: string | null
+          category: string
+          context: Json
+          created_at: string
+          environment: string
+          feature: string
+          fingerprint: string
+          first_seen: string
+          goldie_session_id: string | null
+          id: string
+          last_seen: string
+          lead_id: string | null
+          message: string
+          occurrences: number
+          operation: string | null
+          proposal_id: string | null
+          resolved_at: string | null
+          route: string | null
+          severity: string
+          side: string
+          stack: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          category?: string
+          context?: Json
+          created_at?: string
+          environment?: string
+          feature?: string
+          fingerprint: string
+          first_seen?: string
+          goldie_session_id?: string | null
+          id?: string
+          last_seen?: string
+          lead_id?: string | null
+          message: string
+          occurrences?: number
+          operation?: string | null
+          proposal_id?: string | null
+          resolved_at?: string | null
+          route?: string | null
+          severity?: string
+          side?: string
+          stack?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          category?: string
+          context?: Json
+          created_at?: string
+          environment?: string
+          feature?: string
+          fingerprint?: string
+          first_seen?: string
+          goldie_session_id?: string | null
+          id?: string
+          last_seen?: string
+          lead_id?: string | null
+          message?: string
+          occurrences?: number
+          operation?: string | null
+          proposal_id?: string | null
+          resolved_at?: string | null
+          route?: string | null
+          severity?: string
+          side?: string
+          stack?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_events_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "goldie_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      error_occurrences: {
+        Row: {
+          context: Json
+          created_at: string
+          error_id: string
+          id: string
+          route: string | null
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          error_id: string
+          id?: string
+          route?: string | null
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          error_id?: string
+          id?: string
+          route?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_occurrences_error_id_fkey"
+            columns: ["error_id"]
+            isOneToOne: false
+            referencedRelation: "error_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goldie_leads: {
         Row: {
           admin_notes: string | null
@@ -41,6 +189,8 @@ export type Database = {
           created_at: string
           estimated_range: string | null
           id: string
+          last_contacted_at: string | null
+          lead_score: number
           location: string | null
           priority: string
           project_state: Json
@@ -62,6 +212,8 @@ export type Database = {
           created_at?: string
           estimated_range?: string | null
           id?: string
+          last_contacted_at?: string | null
+          lead_score?: number
           location?: string | null
           priority?: string
           project_state?: Json
@@ -83,6 +235,8 @@ export type Database = {
           created_at?: string
           estimated_range?: string | null
           id?: string
+          last_contacted_at?: string | null
+          lead_score?: number
           location?: string | null
           priority?: string
           project_state?: Json
@@ -94,6 +248,66 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      lead_followups: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          failure_reason: string | null
+          followup_type: string
+          id: string
+          lead_id: string
+          notes: string | null
+          proposal_id: string | null
+          rescheduled_at: string | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          followup_type?: string
+          id?: string
+          lead_id: string
+          notes?: string | null
+          proposal_id?: string | null
+          rescheduled_at?: string | null
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          followup_type?: string
+          id?: string
+          lead_id?: string
+          notes?: string | null
+          proposal_id?: string | null
+          rescheduled_at?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_followups_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "goldie_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_followups_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_baselines: {
         Row: {
@@ -142,6 +356,142 @@ export type Database = {
           visitor_id?: string
         }
         Relationships: []
+      }
+      proposal_versions: {
+        Row: {
+          change_summary: string | null
+          created_at: string
+          editor_email: string | null
+          id: string
+          new_pricing: string | null
+          previous_pricing: string | null
+          proposal_id: string
+          snapshot: Json
+          version: number
+        }
+        Insert: {
+          change_summary?: string | null
+          created_at?: string
+          editor_email?: string | null
+          id?: string
+          new_pricing?: string | null
+          previous_pricing?: string | null
+          proposal_id: string
+          snapshot?: Json
+          version: number
+        }
+        Update: {
+          change_summary?: string | null
+          created_at?: string
+          editor_email?: string | null
+          id?: string
+          new_pricing?: string | null
+          previous_pricing?: string | null
+          proposal_id?: string
+          snapshot?: Json
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_versions_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          accent_color: string
+          assets: Json
+          client_name: string | null
+          created_at: string
+          description: string | null
+          estimated_range: string | null
+          id: string
+          lead_id: string | null
+          logo_url: string | null
+          notes: string | null
+          official_quote: string | null
+          project_name: string | null
+          recommended_plan: string | null
+          reference: string
+          secondary_color: string
+          sections: Json
+          status: string
+          subtitle: string | null
+          support_period: string | null
+          template: string
+          terms: string | null
+          timeline: string | null
+          title: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          accent_color?: string
+          assets?: Json
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_range?: string | null
+          id?: string
+          lead_id?: string | null
+          logo_url?: string | null
+          notes?: string | null
+          official_quote?: string | null
+          project_name?: string | null
+          recommended_plan?: string | null
+          reference?: string
+          secondary_color?: string
+          sections?: Json
+          status?: string
+          subtitle?: string | null
+          support_period?: string | null
+          template?: string
+          terms?: string | null
+          timeline?: string | null
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          accent_color?: string
+          assets?: Json
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_range?: string | null
+          id?: string
+          lead_id?: string | null
+          logo_url?: string | null
+          notes?: string | null
+          official_quote?: string | null
+          project_name?: string | null
+          recommended_plan?: string | null
+          reference?: string
+          secondary_color?: string
+          sections?: Json
+          status?: string
+          subtitle?: string | null
+          support_period?: string | null
+          template?: string
+          terms?: string | null
+          timeline?: string | null
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "goldie_leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       testimonials: {
         Row: {
@@ -202,6 +552,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_draft_proposal: {
+        Args: {
+          _client_name: string
+          _description: string
+          _estimated_range: string
+          _lead_id: string
+          _project_name: string
+          _recommended_plan: string
+          _sections?: Json
+          _timeline: string
+          _title: string
+        }
+        Returns: string
+      }
       ensure_project_baseline: {
         Args: { _project_id: string }
         Returns: undefined
@@ -227,6 +591,25 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      log_error_event: {
+        Args: {
+          _category?: string
+          _context?: Json
+          _environment?: string
+          _feature?: string
+          _fingerprint: string
+          _goldie_session_id?: string
+          _lead_id?: string
+          _message: string
+          _operation?: string
+          _proposal_id?: string
+          _route?: string
+          _severity?: string
+          _side?: string
+          _stack?: string
+        }
+        Returns: string
+      }
       record_project_interaction: {
         Args: {
           _interaction_type: string
