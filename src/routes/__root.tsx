@@ -8,6 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
+import { useEffect } from "react";
+import { installErrorMonitoring, reportError } from "@/lib/monitoring/report";
 
 import appCss from "../styles.css?url";
 
@@ -36,6 +38,17 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+
+  useEffect(() => {
+    void reportError({
+      message: error.message || "Route render failure",
+      error,
+      feature: "app",
+      category: "ui",
+      operation: "ROUTE_ERROR_BOUNDARY",
+      severity: "critical",
+    });
+  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -110,6 +123,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    installErrorMonitoring();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

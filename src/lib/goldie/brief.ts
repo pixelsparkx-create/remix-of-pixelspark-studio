@@ -116,23 +116,34 @@ export function goldieEmailLink(brief: GoldieBrief) {
 }
 
 export async function submitBrief(brief: GoldieBrief) {
-  const { error } = await supabase.from("goldie_leads").insert({
-    client_name: brief.client_name ?? null,
-    contact_email: brief.contact_email ?? null,
-    contact_phone: brief.contact_phone ?? null,
-    business_name: brief.business_name ?? null,
-    business_type: brief.business_type ?? null,
-    location: brief.location ?? null,
-    project_type: brief.project_type ?? null,
-    recommended_plan: brief.recommended_plan ?? null,
-    estimated_range: brief.estimated_range ?? null,
-    timeline: brief.timeline ?? brief.estimated_timeline ?? null,
-    project_state: brief as never,
-    conversation_summary: brief.conversation_summary ?? null,
-    proposal_markdown: brief.proposal_markdown ?? null,
-    status: "new",
-    priority: brief.complexity?.toLowerCase().includes("high") ? "high" : "normal",
-  });
+  const { data, error } = await supabase
+    .from("goldie_leads")
+    .insert({
+      client_name: brief.client_name ?? null,
+      contact_email: brief.contact_email ?? null,
+      contact_phone: brief.contact_phone ?? null,
+      business_name: brief.business_name ?? null,
+      business_type: brief.business_type ?? null,
+      location: brief.location ?? null,
+      project_type: brief.project_type ?? null,
+      recommended_plan: brief.recommended_plan ?? null,
+      estimated_range: brief.estimated_range ?? null,
+      timeline: brief.timeline ?? brief.estimated_timeline ?? null,
+      project_state: brief as never,
+      conversation_summary: brief.conversation_summary ?? null,
+      proposal_markdown: brief.proposal_markdown ?? null,
+      status: "new",
+      priority: brief.complexity?.toLowerCase().includes("high") ? "high" : "normal",
+    })
+    .select("id")
+    .single();
 
   if (error) throw new Error(error.message);
+
+  // Score the lead from its real signals as soon as it lands.
+  if (data?.id) {
+    const { rescoreLead } = await import("@/lib/leads/score");
+    await rescoreLead(data.id as string).catch(() => null);
+  }
 }
+

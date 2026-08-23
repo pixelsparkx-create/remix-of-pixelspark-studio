@@ -1,4 +1,4 @@
-# Remix of PixelSpark Studio
+# Remix of PixelSpark Studio 4 (65)
 
 Build a premium personal brand website for a young creative developer brand called PixelSpark. It should look exactly like website image uploaded. Theme is white with gold and black accents. Remember to connect to lovable cloud when needed 
 
@@ -650,7 +650,7 @@ This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/438d32a1-e11d-4757-8929-f2904965165d).
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/dd23c311-83ac-408a-a707-5ca14333bf09).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.

@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+import { signInWithGoogle } from "@/lib/auth-google";
 import { projects } from "@/lib/projects";
 import { downloadProposal } from "@/lib/goldie/proposal";
 import type { GoldieBrief } from "@/lib/goldie/brief";
 import { formatCount } from "@/lib/engagement";
+import { SystemHealth } from "@/components/admin/SystemHealth";
+import { FollowUpsPanel } from "@/components/admin/FollowUps";
+import { ProposalsPanel } from "@/components/admin/Proposals";
+import { InboxPanel } from "@/components/admin/Inbox";
+import { ScoreBadge, ScorePanel } from "@/components/admin/LeadScore";
+import { effectiveCategory, type ScoredLead } from "@/lib/leads/score";
 import {
   Heart,
   Eye,
@@ -23,6 +29,10 @@ import {
   Sparkles,
   Inbox,
   ChevronDown,
+  CalendarClock,
+  FileText,
+  Activity,
+  Mails,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -72,7 +82,7 @@ type Lead = {
   priority: string;
   status: string;
   created_at: string;
-};
+} & ScoredLead;
 
 const LEAD_STATUSES = ["new", "reviewing", "contacted", "quoted", "in progress", "closed"] as const;
 
@@ -114,9 +124,7 @@ function AdminPage() {
 
   async function onGoogle() {
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/admin`,
-    });
+    const result = await signInWithGoogle(`${window.location.origin}/admin`);
     if (result.error) return setError(String((result.error as any).message ?? result.error));
     if (result.redirected) return;
     setStatus("loading");
@@ -202,9 +210,13 @@ function AdminPage() {
 const modules = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "leads", label: "AI Leads", icon: Inbox },
+  { id: "inbox", label: "Inbox", icon: Mails },
+  { id: "followups", label: "Follow-Ups", icon: CalendarClock },
+  { id: "proposals", label: "Proposals", icon: FileText },
   { id: "portfolio", label: "Portfolio", icon: FolderKanban },
   { id: "testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "health", label: "System Health", icon: Activity },
 ] as const;
 
 type ModuleId = (typeof modules)[number]["id"];
@@ -214,20 +226,23 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [engagement, setEngagement] = useState<Engagement[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [signals, setSignals] = useState<{ source: string; kind: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   const slugs = useMemo(() => projects.map((p) => p.slug), []);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [t, e, l] = await Promise.all([
+    const [t, e, l, c] = await Promise.all([
       supabase.from("testimonials").select("*").order("created_at", { ascending: false }),
       (supabase as any).rpc("get_project_engagement", { _project_ids: slugs }),
       supabase.from("goldie_leads").select("*").order("created_at", { ascending: false }),
+      supabase.from("contact_events").select("source,kind").limit(1000),
     ]);
     setTestimonials((t.data as Testimonial[]) ?? []);
     setEngagement((e.data as Engagement[]) ?? []);
     setLeads((l.data as unknown as Lead[]) ?? []);
+    setSignals((c.data as unknown as { source: string; kind: string }[]) ?? []);
     setLoading(false);
   }, [slugs]);
 
@@ -257,6 +272,10 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
   async function setLeadStatus(id: string, status: string) {
     await supabase.from("goldie_leads").update({ status }).eq("id", id);
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+  }
+
+  function patchLead(id: string, patch: Partial<Lead>) {
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)));
   }
 
   async function deleteLead(id: string) {
@@ -330,7 +349,15 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
               />
             </div>
           ) : tab === "leads" ? (
-            <LeadsPanel leads={leads} onStatus={setLeadStatus} onDelete={deleteLead} />
+            <LeadsPanel leads={leads} onStatus={setLeadStatus} onDelete={deleteLead} onPatch={patchLead} />
+          ) : tab === "inbox" ? (
+            <InboxPanel />
+          ) : tab === "followups" ? (
+            <FollowUpsPanel leads={leads} />
+          ) : tab === "proposals" ? (
+            <ProposalsPanel leads={leads} />
+          ) : tab === "health" ? (
+            <SystemHealth />
           ) : tab === "portfolio" ? (
             <div className="grid md:grid-cols-2 gap-5">
               {projects.map((p) => {
@@ -400,6 +427,8 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
               ))}
             </div>
           ) : (
+            <div className="space-y-6">
+            <LeadQuality leads={leads} signals={signals} />
             <div className="rounded-3xl border border-border bg-card p-6">
               <div className="text-xs tracking-[0.2em] text-gold mb-4">PORTFOLIO ENGAGEMENT</div>
               <div className="overflow-x-auto">
@@ -427,6 +456,7 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
                   </tbody>
                 </table>
               </div>
+            </div>
             </div>
           )}
         </section>
@@ -460,10 +490,12 @@ function LeadsPanel({
   leads,
   onStatus,
   onDelete,
+  onPatch,
 }: {
   leads: Lead[];
   onStatus: (id: string, status: string) => void;
   onDelete: (id: string) => void;
+  onPatch: (id: string, patch: Partial<Lead>) => void;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -548,6 +580,7 @@ function LeadsPanel({
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <ScoreBadge lead={lead} />
                 {lead.priority === "high" && (
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border border-gold text-gold">
                     High
@@ -628,7 +661,9 @@ function LeadsPanel({
             </div>
 
             {open && (
-              <div className="mt-5 grid gap-5 md:grid-cols-2 border-t border-border pt-5 text-sm">
+              <div className="mt-5 space-y-5 border-t border-border pt-5 text-sm">
+                <ScorePanel lead={lead} onChange={(patch) => onPatch(lead.id, patch)} />
+                <div className="grid gap-5 md:grid-cols-2">
                 <div className="space-y-3">
                   <Detail label="Business summary" value={(state["target_audience"] as string) ?? "—"} />
                   <Detail label="Goals" value={list("business_goals").join(", ") || "—"} />
@@ -650,6 +685,7 @@ function LeadsPanel({
                     </div>
                   )}
                 </div>
+                </div>
               </div>
             )}
           </div>
@@ -664,6 +700,29 @@ function Detail({ label, value }: { label: string; value: string }) {
     <div>
       <div className="text-[11px] tracking-[0.15em] text-gold">{label.toUpperCase()}</div>
       <div className="text-sm text-muted-foreground">{value}</div>
+    </div>
+  );
+}
+
+
+function LeadQuality({ leads, signals }: { leads: Lead[]; signals: { source: string; kind: string }[] }) {
+  const scored = leads.filter((l) => typeof l.lead_score === "number");
+  const avg = scored.length
+    ? Math.round(scored.reduce((sum, l) => sum + Number(l.lead_score ?? 0), 0) / scored.length)
+    : 0;
+  const counts = { HOT: 0, WARM: 0, COLD: 0 } as Record<string, number>;
+  leads.forEach((l) => {
+    counts[effectiveCategory(l)] += 1;
+  });
+  const initiated = signals.filter((s) => s.kind === "initiated");
+  const bySource = (source: string) => initiated.filter((s) => s.source === source).length;
+
+  return (
+    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <Stat label="Average lead score" value={String(avg)} hint={`${scored.length} scored leads`} icon={BarChart3} />
+      <Stat label="Hot leads" value={String(counts.HOT)} hint={`${counts.WARM} warm · ${counts.COLD} cold`} icon={Inbox} />
+      <Stat label="WhatsApp handoffs" value={String(bySource("whatsapp"))} hint="conversion signal" icon={Mails} />
+      <Stat label="Email handoffs" value={String(bySource("email"))} hint="conversion signal" icon={Mails} />
     </div>
   );
 }

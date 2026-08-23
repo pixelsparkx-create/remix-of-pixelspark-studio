@@ -2,13 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from "ai";
 import { z } from "zod";
 import {
-  createLovableAiGatewayProvider,
   getLovableAiGatewayResponseHeaders,
   getLovableAiGatewayRunId,
   withLovableAiGatewayRunIdHeader,
   LOVABLE_AIG_RUN_ID_HEADER,
 } from "@/lib/ai-gateway.server";
+import { resolveAiProvider, AI_UNCONFIGURED_MESSAGE } from "@/lib/ai-provider.server";
 import { buildSystemPrompt } from "@/lib/goldie/knowledge";
+import { reportServerError } from "@/lib/monitoring/report.server";
 
 const briefSchema = z.object({
   client_name: z.string().nullish(),
@@ -47,15 +48,13 @@ export const Route = createFileRoute("/api/goldie")({
           return new Response("Messages are required", { status: 400 });
         }
 
-        const key = process.env["LOVABLE_API_KEY"];
-        if (!key) return new Response("AI is not configured", { status: 500 });
-
         const initialRunId = getLovableAiGatewayRunId(request);
-        const gateway = createLovableAiGatewayProvider(key, initialRunId);
+        const gateway = resolveAiProvider(initialRunId);
+        if (!gateway) return new Response(AI_UNCONFIGURED_MESSAGE, { status: 503 });
 
         try {
           const result = streamText({
-            model: gateway("google/gemini-3.6-flash"),
+            model: gateway.model,
             system: buildSystemPrompt(),
             messages: await convertToModelMessages(body.messages as UIMessage[]),
             stopWhen: stepCountIs(6),
@@ -82,6 +81,15 @@ export const Route = createFileRoute("/api/goldie")({
             originalMessages: body.messages as UIMessage[],
             onError: (error) => {
               console.error("[goldie] stream error", error);
+              void reportServerError({
+                message: "Goldie AI stream failed",
+                error,
+                severity: "error",
+                feature: "goldie",
+                category: "ai",
+                operation: "AI_RESPONSE",
+                route: "/api/goldie",
+              });
               const message = error instanceof Error ? error.message : String(error);
               if (message.includes("429")) return "Goldie is a bit busy right now — please try again in a moment.";
               if (message.includes("402")) return "Goldie is temporarily unavailable. Please reach out on WhatsApp.";
@@ -95,6 +103,15 @@ export const Route = createFileRoute("/api/goldie")({
           return withLovableAiGatewayRunIdHeader(response, gateway);
         } catch (error) {
           console.error("[goldie] failed", error);
+          await reportServerError({
+            message: "Goldie request failed",
+            error,
+            severity: "critical",
+            feature: "goldie",
+            category: "ai",
+            operation: "AI_REQUEST",
+            route: "/api/goldie",
+          });
           return new Response("Goldie is unavailable right now", { status: 500 });
         }
       },

@@ -19,6 +19,7 @@ import {
   MicOff,
   Copy,
   ChevronDown,
+  FileDown,
 } from "lucide-react";
 import {
   mergeBrief,
@@ -30,6 +31,10 @@ import {
   type GoldieBrief,
 } from "@/lib/goldie/brief";
 import { downloadProposal } from "@/lib/goldie/proposal";
+import { downloadTranscript, transcriptFileName, type TranscriptMessage } from "@/lib/transcript";
+import { GOLDIE_HANDOFF_KEY } from "@/lib/plan/api";
+import { supabase } from "@/integrations/supabase/client";
+import { getSessionId } from "@/lib/session";
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { LINKEDIN_URL } from "@/lib/contact";
 import { toast } from "sonner";
@@ -79,6 +84,15 @@ export function Goldie() {
     setInitial(loaded);
     setResumed(loaded.length > 1);
     setMounted(true);
+  }, []);
+
+  // The pricing guide hands a visitor over to Goldie with their plan context.
+  useEffect(() => {
+    function onOpen() {
+      setOpen(true);
+    }
+    window.addEventListener("pixelspark:open-goldie", onOpen);
+    return () => window.removeEventListener("pixelspark:open-goldie", onOpen);
   }, []);
 
   // Lock the page behind the full-screen mobile panel.
@@ -178,6 +192,22 @@ function GoldiePanel({
   });
 
   const busy = status === "submitted" || status === "streaming";
+
+  // Prefill from the pricing guide handoff so the visitor never repeats themselves.
+  const handoffSent = useRef(false);
+  useEffect(() => {
+    if (handoffSent.current) return;
+    let text: string | null = null;
+    try {
+      text = window.localStorage.getItem(GOLDIE_HANDOFF_KEY);
+      if (text) window.localStorage.removeItem(GOLDIE_HANDOFF_KEY);
+    } catch {
+      /* private mode — no handoff available */
+    }
+    if (!text) return;
+    handoffSent.current = true;
+    void sendMessage({ text });
+  }, [sendMessage]);
 
   // Persist the single ongoing conversation.
   useEffect(() => {
@@ -283,7 +313,40 @@ function GoldiePanel({
     [busy, sendMessage, voice],
   );
 
-  function reset() {
+  const transcriptMessages: TranscriptMessage[] = useMemo(
+    () =>
+      messages
+        .map((m) => ({
+          role: m.role === "user" ? ("user" as const) : ("assistant" as const),
+          text: (m.parts ?? []).map((p) => (p.type === "text" ? p.text : "")).join("").trim(),
+        }))
+        .filter((m) => m.text.length > 0),
+    [messages],
+  );
+
+  function exportConversation() {
+    if (transcriptMessages.length <= 1) {
+      toast.error("Have a chat with Goldie first — there's nothing to export yet.");
+      return;
+    }
+    const sessionId = getSessionId();
+    const ok = downloadTranscript({ brief, messages: transcriptMessages, type: "client", sessionId });
+    if (!ok) {
+      toast.error("Allow pop-ups to export your conversation.");
+      return;
+    }
+    void supabase
+      .from("transcript_exports")
+      .insert({
+        goldie_session_id: sessionId,
+        format: "pdf",
+        export_type: "client",
+        filename: transcriptFileName(brief, "client"),
+      })
+      .then(() => undefined, () => undefined);
+  }
+
+  function resetConversation() {
     if (messages.length > 1 && !window.confirm("Start a fresh conversation with Goldie? This clears the current one.")) {
       return;
     }
@@ -319,7 +382,15 @@ function GoldiePanel({
             </div>
           </div>
           <button
-            onClick={reset}
+            onClick={exportConversation}
+            aria-label="Export conversation"
+            title="Export conversation (PDF)"
+            className="p-2 rounded-full opacity-70 hover:opacity-100 hover:bg-background/10 transition-colors"
+          >
+            <FileDown className="h-4 w-4" />
+          </button>
+          <button
+            onClick={resetConversation}
             aria-label="Start over"
             title="Start over"
             className="p-2 rounded-full opacity-70 hover:opacity-100 hover:bg-background/10 transition-colors"

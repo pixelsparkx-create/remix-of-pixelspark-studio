@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+import { signInWithGoogle } from "@/lib/auth-google";
 
 function sanitizeNext(value: unknown): string {
   if (typeof value !== "string") return "/";
@@ -76,10 +76,9 @@ function AuthPage() {
 
   async function onGoogle() {
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: returnUrl,
-    });
-    if (result.error) return setError(String(result.error.message ?? result.error));
+    const result = await signInWithGoogle(returnUrl);
+    if (result.error)
+      return setError(String((result.error as { message?: string }).message ?? result.error));
     if (result.redirected) return;
     navigate({ to: next as string });
   }

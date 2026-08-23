@@ -74,18 +74,64 @@ export async function fetchHasAppreciated(projectId: string): Promise<boolean> {
   return Boolean(data);
 }
 
+/**
+ * Client-side first line of defence against double taps and refresh loops.
+ * The database enforces the real cooldown + rate limits; this simply avoids
+ * firing obviously redundant requests.
+ */
+const CLIENT_COOLDOWN_MS: Record<string, number> = {
+  view: 30 * 60 * 1000,
+  live_visit: 5 * 60 * 1000,
+  appreciation: 2 * 1000,
+};
+const COOLDOWN_KEY = "pxs_interaction_cooldowns";
+const inFlight = new Set<string>();
+
+function cooldowns(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(COOLDOWN_KEY) || "{}") as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+
+function shouldSend(key: string, windowMs: number): boolean {
+  const map = cooldowns();
+  const last = map[key] ?? 0;
+  if (Date.now() - last < windowMs) return false;
+  map[key] = Date.now();
+  try {
+    localStorage.setItem(COOLDOWN_KEY, JSON.stringify(map));
+  } catch {
+    /* ignore */
+  }
+  return true;
+}
+
 export async function recordInteraction(
   projectId: string,
   type: "view" | "appreciation" | "live_visit",
 ): Promise<EngagementCounts | null> {
   const visitor = getVisitorId();
   if (!visitor) return null;
-  const { data, error } = await rpc("record_project_interaction", {
-    _project_id: projectId,
-    _interaction_type: type,
-    _visitor_id: visitor,
-  });
-  if (error || !data?.length) return null;
-  const row = data[0] as Row;
-  return { appreciations: row.appreciations, views: row.views, live_visits: row.live_visits };
+
+  const key = `${type}:${projectId}`;
+  if (inFlight.has(key)) return null;
+  if (!shouldSend(key, CLIENT_COOLDOWN_MS[type] ?? 1000)) return null;
+
+  inFlight.add(key);
+  try {
+    const { data, error } = await rpc("record_project_interaction", {
+      _project_id: projectId,
+      _interaction_type: type,
+      _visitor_id: visitor,
+    });
+    if (error || !data?.length) return null;
+    const row = data[0] as Row;
+    return { appreciations: row.appreciations, views: row.views, live_visits: row.live_visits };
+  } finally {
+    inFlight.delete(key);
+  }
 }
+
