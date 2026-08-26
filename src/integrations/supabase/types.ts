@@ -309,6 +309,130 @@ export type Database = {
           },
         ]
       }
+      payment_events: {
+        Row: {
+          actor: string | null
+          created_at: string
+          detail: string | null
+          event_type: string
+          from_status: string | null
+          id: string
+          payment_request_id: string
+          to_status: string | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          detail?: string | null
+          event_type: string
+          from_status?: string | null
+          id?: string
+          payment_request_id: string
+          to_status?: string | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          detail?: string | null
+          event_type?: string
+          from_status?: string | null
+          id?: string
+          payment_request_id?: string
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_payment_request_id_fkey"
+            columns: ["payment_request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_requests: {
+        Row: {
+          amount: number
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          expires_at: string | null
+          flutterwave_payment_link: string | null
+          flutterwave_reference: string | null
+          flutterwave_transaction_id: string | null
+          id: string
+          internal_note: string | null
+          lead_id: string | null
+          paid_at: string | null
+          payment_type: string
+          project_name: string | null
+          project_type: string | null
+          request_code: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          expires_at?: string | null
+          flutterwave_payment_link?: string | null
+          flutterwave_reference?: string | null
+          flutterwave_transaction_id?: string | null
+          id?: string
+          internal_note?: string | null
+          lead_id?: string | null
+          paid_at?: string | null
+          payment_type?: string
+          project_name?: string | null
+          project_type?: string | null
+          request_code: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          expires_at?: string | null
+          flutterwave_payment_link?: string | null
+          flutterwave_reference?: string | null
+          flutterwave_transaction_id?: string | null
+          id?: string
+          internal_note?: string | null
+          lead_id?: string | null
+          paid_at?: string | null
+          payment_type?: string
+          project_name?: string | null
+          project_type?: string | null
+          request_code?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_requests_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "goldie_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_baselines: {
         Row: {
           base_appreciations: number
@@ -570,6 +694,7 @@ export type Database = {
         Args: { _project_id: string }
         Returns: undefined
       }
+      generate_payment_code: { Args: never; Returns: string }
       get_project_engagement: {
         Args: { _project_ids: string[] }
         Returns: {
@@ -577,6 +702,23 @@ export type Database = {
           live_visits: number
           project_id: string
           views: number
+        }[]
+      }
+      get_public_payment_request: {
+        Args: { _code: string }
+        Returns: {
+          amount: number
+          client_name: string
+          created_at: string
+          currency: string
+          description: string
+          expires_at: string
+          paid_at: string
+          payment_type: string
+          project_name: string
+          project_type: string
+          request_code: string
+          status: string
         }[]
       }
       has_appreciated: {
