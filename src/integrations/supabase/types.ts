@@ -59,135 +59,6 @@ export type Database = {
         }
         Relationships: []
       }
-      contact_events: {
-        Row: {
-          business_name: string | null
-          client_name: string | null
-          contact_email: string | null
-          contact_phone: string | null
-          created_at: string
-          goldie_session_id: string | null
-          id: string
-          kind: string
-          lead_id: string | null
-          message: string | null
-          metadata: Json
-          plan_id: string | null
-          priority: string
-          project: string | null
-          recommended_plan: string | null
-          source: string
-          status: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          business_name?: string | null
-          client_name?: string | null
-          contact_email?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          goldie_session_id?: string | null
-          id?: string
-          kind?: string
-          lead_id?: string | null
-          message?: string | null
-          metadata?: Json
-          plan_id?: string | null
-          priority?: string
-          project?: string | null
-          recommended_plan?: string | null
-          source: string
-          status?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          business_name?: string | null
-          client_name?: string | null
-          contact_email?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          goldie_session_id?: string | null
-          id?: string
-          kind?: string
-          lead_id?: string | null
-          message?: string | null
-          metadata?: Json
-          plan_id?: string | null
-          priority?: string
-          project?: string | null
-          recommended_plan?: string | null
-          source?: string
-          status?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "contact_events_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "goldie_leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contact_events_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "pricing_plans"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      engagement_abuse: {
-        Row: {
-          created_at: string
-          id: string
-          interaction_type: string | null
-          project_id: string | null
-          reason: string
-          visitor_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          interaction_type?: string | null
-          project_id?: string | null
-          reason: string
-          visitor_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          interaction_type?: string | null
-          project_id?: string | null
-          reason?: string
-          visitor_id?: string
-        }
-        Relationships: []
-      }
-      engagement_rules: {
-        Row: {
-          description: string | null
-          key: string
-          updated_at: string
-          value: number
-        }
-        Insert: {
-          description?: string | null
-          key: string
-          updated_at?: string
-          value: number
-        }
-        Update: {
-          description?: string | null
-          key?: string
-          updated_at?: string
-          value?: number
-        }
-        Relationships: []
-      }
       error_events: {
         Row: {
           admin_notes: string | null
@@ -317,26 +188,15 @@ export type Database = {
           conversation_summary: string | null
           created_at: string
           estimated_range: string | null
-          goldie_session_id: string | null
           id: string
           last_contacted_at: string | null
           lead_score: number
           location: string | null
-          plan_reference: string | null
           priority: string
           project_state: Json
           project_type: string | null
           proposal_markdown: string | null
           recommended_plan: string | null
-          score_category: string | null
-          score_override: string | null
-          score_override_at: string | null
-          score_override_by: string | null
-          score_override_reason: string | null
-          score_reasons: Json | null
-          score_signals: Json | null
-          score_updated_at: string | null
-          source: string
           status: string
           timeline: string | null
           updated_at: string
@@ -351,26 +211,15 @@ export type Database = {
           conversation_summary?: string | null
           created_at?: string
           estimated_range?: string | null
-          goldie_session_id?: string | null
           id?: string
           last_contacted_at?: string | null
           lead_score?: number
           location?: string | null
-          plan_reference?: string | null
           priority?: string
           project_state?: Json
           project_type?: string | null
           proposal_markdown?: string | null
           recommended_plan?: string | null
-          score_category?: string | null
-          score_override?: string | null
-          score_override_at?: string | null
-          score_override_by?: string | null
-          score_override_reason?: string | null
-          score_reasons?: Json | null
-          score_signals?: Json | null
-          score_updated_at?: string | null
-          source?: string
           status?: string
           timeline?: string | null
           updated_at?: string
@@ -385,26 +234,15 @@ export type Database = {
           conversation_summary?: string | null
           created_at?: string
           estimated_range?: string | null
-          goldie_session_id?: string | null
           id?: string
           last_contacted_at?: string | null
           lead_score?: number
           location?: string | null
-          plan_reference?: string | null
           priority?: string
           project_state?: Json
           project_type?: string | null
           proposal_markdown?: string | null
           recommended_plan?: string | null
-          score_category?: string | null
-          score_override?: string | null
-          score_override_at?: string | null
-          score_override_by?: string | null
-          score_override_reason?: string | null
-          score_reasons?: Json | null
-          score_signals?: Json | null
-          score_updated_at?: string | null
-          source?: string
           status?: string
           timeline?: string | null
           updated_at?: string
@@ -471,138 +309,123 @@ export type Database = {
           },
         ]
       }
-      lead_score_history: {
+      payment_events: {
         Row: {
+          actor: string | null
           created_at: string
+          detail: string | null
+          event_type: string
+          from_status: string | null
           id: string
-          lead_id: string
-          new_category: string
-          new_score: number
-          previous_category: string | null
-          previous_score: number | null
-          reason: string | null
-          source: string
+          payment_request_id: string
+          to_status: string | null
         }
         Insert: {
+          actor?: string | null
           created_at?: string
+          detail?: string | null
+          event_type: string
+          from_status?: string | null
           id?: string
-          lead_id: string
-          new_category: string
-          new_score: number
-          previous_category?: string | null
-          previous_score?: number | null
-          reason?: string | null
-          source?: string
+          payment_request_id: string
+          to_status?: string | null
         }
         Update: {
+          actor?: string | null
           created_at?: string
+          detail?: string | null
+          event_type?: string
+          from_status?: string | null
           id?: string
-          lead_id?: string
-          new_category?: string
-          new_score?: number
-          previous_category?: string | null
-          previous_score?: number | null
-          reason?: string | null
-          source?: string
+          payment_request_id?: string
+          to_status?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "lead_score_history_lead_id_fkey"
-            columns: ["lead_id"]
+            foreignKeyName: "payment_events_payment_request_id_fkey"
+            columns: ["payment_request_id"]
             isOneToOne: false
-            referencedRelation: "goldie_leads"
+            referencedRelation: "payment_requests"
             referencedColumns: ["id"]
           },
         ]
       }
-      pricing_plans: {
+      payment_requests: {
         Row: {
-          answers: Json
-          base_price: number
-          business_name: string | null
+          amount: number
+          client_email: string | null
           client_name: string | null
-          complexity_factors: Json
+          client_phone: string | null
           created_at: string
+          created_by: string | null
           currency: string
-          design_direction: string | null
-          estimate_max: number
-          estimate_min: number
-          goldie_session_id: string | null
+          description: string | null
+          expires_at: string | null
+          flutterwave_payment_link: string | null
+          flutterwave_reference: string | null
+          flutterwave_transaction_id: string | null
           id: string
-          industry: string | null
+          internal_note: string | null
           lead_id: string | null
-          project_goal: string | null
-          rationale: string | null
-          recommended_plan: string
-          reference: string
-          required_features: Json
-          required_integrations: Json
-          required_pages: Json
-          share_count: number
+          paid_at: string | null
+          payment_type: string
+          project_name: string | null
+          project_type: string | null
+          request_code: string
           status: string
-          target_audience: string | null
-          timeline: string | null
           updated_at: string
         }
         Insert: {
-          answers?: Json
-          base_price?: number
-          business_name?: string | null
+          amount: number
+          client_email?: string | null
           client_name?: string | null
-          complexity_factors?: Json
+          client_phone?: string | null
           created_at?: string
+          created_by?: string | null
           currency?: string
-          design_direction?: string | null
-          estimate_max?: number
-          estimate_min?: number
-          goldie_session_id?: string | null
+          description?: string | null
+          expires_at?: string | null
+          flutterwave_payment_link?: string | null
+          flutterwave_reference?: string | null
+          flutterwave_transaction_id?: string | null
           id?: string
-          industry?: string | null
+          internal_note?: string | null
           lead_id?: string | null
-          project_goal?: string | null
-          rationale?: string | null
-          recommended_plan?: string
-          reference: string
-          required_features?: Json
-          required_integrations?: Json
-          required_pages?: Json
-          share_count?: number
+          paid_at?: string | null
+          payment_type?: string
+          project_name?: string | null
+          project_type?: string | null
+          request_code: string
           status?: string
-          target_audience?: string | null
-          timeline?: string | null
           updated_at?: string
         }
         Update: {
-          answers?: Json
-          base_price?: number
-          business_name?: string | null
+          amount?: number
+          client_email?: string | null
           client_name?: string | null
-          complexity_factors?: Json
+          client_phone?: string | null
           created_at?: string
+          created_by?: string | null
           currency?: string
-          design_direction?: string | null
-          estimate_max?: number
-          estimate_min?: number
-          goldie_session_id?: string | null
+          description?: string | null
+          expires_at?: string | null
+          flutterwave_payment_link?: string | null
+          flutterwave_reference?: string | null
+          flutterwave_transaction_id?: string | null
           id?: string
-          industry?: string | null
+          internal_note?: string | null
           lead_id?: string | null
-          project_goal?: string | null
-          rationale?: string | null
-          recommended_plan?: string
-          reference?: string
-          required_features?: Json
-          required_integrations?: Json
-          required_pages?: Json
-          share_count?: number
+          paid_at?: string | null
+          payment_type?: string
+          project_name?: string | null
+          project_type?: string | null
+          request_code?: string
           status?: string
-          target_audience?: string | null
-          timeline?: string | null
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "pricing_plans_lead_id_fkey"
+            foreignKeyName: "payment_requests_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "goldie_leads"
@@ -827,47 +650,6 @@ export type Database = {
         }
         Relationships: []
       }
-      transcript_exports: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          export_type: string
-          filename: string
-          format: string
-          goldie_session_id: string | null
-          id: string
-          lead_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          export_type?: string
-          filename: string
-          format?: string
-          goldie_session_id?: string | null
-          id?: string
-          lead_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          export_type?: string
-          filename?: string
-          format?: string
-          goldie_session_id?: string | null
-          id?: string
-          lead_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transcript_exports_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "goldie_leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_roles: {
         Row: {
           created_at: string
@@ -908,14 +690,11 @@ export type Database = {
         }
         Returns: string
       }
-      engagement_rule: {
-        Args: { _fallback: number; _key: string }
-        Returns: number
-      }
       ensure_project_baseline: {
         Args: { _project_id: string }
         Returns: undefined
       }
+      generate_payment_code: { Args: never; Returns: string }
       get_project_engagement: {
         Args: { _project_ids: string[] }
         Returns: {
@@ -925,20 +704,23 @@ export type Database = {
           views: number
         }[]
       }
-      get_project_engagement_detailed: {
-        Args: { _project_ids: string[] }
+      get_public_payment_request: {
+        Args: { _code: string }
         Returns: {
-          project_id: string
-          suppressed_events: number
-          total_appreciations: number
-          total_live_visits: number
-          total_views: number
-          unique_appreciations: number
-          unique_live_visits: number
-          unique_views: number
+          amount: number
+          client_name: string
+          created_at: string
+          currency: string
+          description: string
+          expires_at: string
+          paid_at: string
+          payment_type: string
+          project_name: string
+          project_type: string
+          request_code: string
+          status: string
         }[]
       }
-      get_shared_plan: { Args: { _reference: string }; Returns: Json }
       has_appreciated: {
         Args: { _project_id: string; _visitor_id: string }
         Returns: boolean
@@ -970,11 +752,6 @@ export type Database = {
         }
         Returns: string
       }
-      mark_plan_shared: { Args: { _reference: string }; Returns: undefined }
-      override_lead_category: {
-        Args: { _category: string; _lead_id: string; _reason: string }
-        Returns: undefined
-      }
       record_project_interaction: {
         Args: {
           _interaction_type: string
@@ -987,24 +764,6 @@ export type Database = {
           project_id: string
           views: number
         }[]
-      }
-      score_lead: {
-        Args: { _lead_id: string }
-        Returns: {
-          category: string
-          reasons: Json
-          score: number
-        }[]
-      }
-      submit_plan: {
-        Args: {
-          _client_name?: string
-          _contact_email?: string
-          _contact_phone?: string
-          _note?: string
-          _reference: string
-        }
-        Returns: string
       }
     }
     Enums: {
