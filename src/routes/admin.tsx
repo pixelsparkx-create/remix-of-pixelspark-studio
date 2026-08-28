@@ -32,6 +32,7 @@ import {
   ChevronDown,
   CalendarClock,
   FileText,
+  Receipt,
   Activity,
   Mails,
 } from "lucide-react";
