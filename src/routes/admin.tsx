@@ -213,6 +213,7 @@ const modules = [
   { id: "inbox", label: "Inbox", icon: Mails },
   { id: "followups", label: "Follow-Ups", icon: CalendarClock },
   { id: "proposals", label: "Proposals", icon: FileText },
+  { id: "payments", label: "Payments", icon: Receipt },
   { id: "portfolio", label: "Portfolio", icon: FolderKanban },
   { id: "testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
