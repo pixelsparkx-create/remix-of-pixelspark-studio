@@ -13,7 +13,8 @@ export const Route = createFileRoute("/api/public/flutterwave-webhook")({
 
         const body = (await request.json().catch(() => null)) as any;
         const txRef = body?.data?.tx_ref ?? body?.txRef;
-        if (typeof txRef !== "string") return new Response("ok");
+        const status = String(body?.data?.status ?? body?.status ?? "").toLowerCase();
+        if (typeof txRef !== "string" || status !== "successful") return new Response("ok");
 
         const code = txRef.split("-").slice(0, 2).join("-");
         const { verifyByReference } = await import("@/lib/payments/flutterwave.server");
