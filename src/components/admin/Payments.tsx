@@ -42,7 +42,7 @@ export function PaymentsPanel() {
       .from("payment_requests")
       .select("*")
       .order("created_at", { ascending: false });
-    setRows(((data ?? []) as unknown as PaymentRequest[]) ?? []);
+    setRows((data ?? []) as unknown as PaymentRequest[]);
     setLoading(false);
   }, []);
 
