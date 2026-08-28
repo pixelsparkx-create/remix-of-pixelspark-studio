@@ -9,6 +9,7 @@ import { formatCount } from "@/lib/engagement";
 import { SystemHealth } from "@/components/admin/SystemHealth";
 import { FollowUpsPanel } from "@/components/admin/FollowUps";
 import { ProposalsPanel } from "@/components/admin/Proposals";
+import { PaymentsPanel } from "@/components/admin/Payments";
 import { InboxPanel } from "@/components/admin/Inbox";
 import { ScoreBadge, ScorePanel } from "@/components/admin/LeadScore";
 import { effectiveCategory, type ScoredLead } from "@/lib/leads/score";
@@ -357,6 +358,8 @@ function AdminDashboard({ onSignOut }: { onSignOut: () => void }) {
             <FollowUpsPanel leads={leads} />
           ) : tab === "proposals" ? (
             <ProposalsPanel leads={leads} />
+          ) : tab === "payments" ? (
+            <PaymentsPanel />
           ) : tab === "health" ? (
             <SystemHealth />
           ) : tab === "portfolio" ? (
